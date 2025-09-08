@@ -44,6 +44,9 @@ public class GameMain : MonoBehaviour
     public GameObject hitCircsContainer;
     public GameObject GameUI;
     public GameObject PauseUI;
+    public GameObject ResultUIRaw;
+    public GameObject IlluImageGameObject;
+    public GameObject IlluDimMaskGameObject;
     public RawImage chartDimMask;
     public Camera mainCamera;
     private bool isPlaying = false;
@@ -56,6 +59,7 @@ public class GameMain : MonoBehaviour
     private Touchscreen touchscreen;
     private double lastupdate_playment_time;
     private double t;
+    private GameObject ResultUI;
 
     public Texture2D ntexTap;
     public Texture2D ntexExTap;
@@ -67,6 +71,8 @@ public class GameMain : MonoBehaviour
     public Texture2D[] ntexExHold;
     public Texture2D[] ntexHoldDouble;
     public Texture2D[] ntexExHoldDouble;
+
+    public Texture2D[] AllWeatherIcons;
 
     private const double MILWIDTH = 1920.0;
     private const double MILHEIGHT = 1080.0;
@@ -100,6 +106,7 @@ public class GameMain : MonoBehaviour
     
     void Start() {
         UpdateInputSystem();
+        ResultUIRaw.SetActive(false);
     }
 
     void Awake() {
@@ -150,9 +157,12 @@ public class GameMain : MonoBehaviour
     void Update() {
         UpdateCanvasSize();
         UpdateInputSystem();
+
         if (!isPlaying) return;
         libSasa.recover_if_needed(sasaManager);
-        t = libSasa.get_music_position(sasaMusic) - OFFSET / 1000 - chart.meta.offset;
+        var music_length = libSasa.get_audio_clip_duration(sasaAudioClip);
+        var music_position = libSasa.get_music_position(sasaMusic);
+        t = music_position - OFFSET / 1000;
 
         if (keyboard != null) {
             for (Key key = Key.A; key <= Key.Z; key++) {
@@ -509,9 +519,14 @@ public class GameMain : MonoBehaviour
         GameUI.transform.Find("Acc").gameObject.GetComponent<Text>().text = $"{(acc * 100).ToString("F2")}%";
         GameUI.transform.Find("ComboText").gameObject.GetComponent<Text>().text = AUTOPLAY ? "AUTOPLAY" : "COMBO";
 
-        var music_length = libSasa.get_audio_clip_duration(sasaAudioClip);
-        var progress = t / music_length;
+        var progress = music_position / music_length;
         GameUI.transform.Find("Progressbar").gameObject.GetComponent<RectTransform>().localScale = new Vector2((float)(progress * canvasSize.x), 1);
+
+        if (t > chart.comboTimes[chart.comboTimes.Count - 1] + 0.5 || music_position + 1e-2 >= music_length) {
+            isPlaying = false;
+            BeforeEndplayAnimation();
+            EndplayAnimation();
+        }
     }
 
     void ReleaseSasa() {
@@ -546,7 +561,7 @@ public class GameMain : MonoBehaviour
         GameUI.transform.Find("Difficulty").gameObject.GetComponent<Text>().text = $"{chart.meta.difficulty_name} {(int)chart.meta.difficulty}{(chart.meta.difficulty - (int)chart.meta.difficulty > 1e-6 ? "+" : "")}";
 
         var dimColor = chartDimMask.color;
-        dimColor.a = (float)(1.0 - Math.Pow((1.0 - chart.meta.background_dim), 2.0));
+        dimColor.a = (float)chart.meta.background_dim;
         chartDimMask.color = dimColor;
 
         foreach (var line in chart.lines) {
@@ -658,6 +673,7 @@ public class GameMain : MonoBehaviour
     public void BackToHub() {
         isPlaying = false;
         ReleasePrefabs();
+        DestoryResultUI();
         gameCanvas.gameObject.SetActive(false);
         OnDestroy();
         hub.OnDestroy();
@@ -667,7 +683,13 @@ public class GameMain : MonoBehaviour
     public void Retry() {
         isPlaying = false;
         ReleasePrefabs();
+        DestoryResultUI();
         IntoPlay(true);
+    }
+
+    private void DestoryResultUI() {
+        if (ResultUI != null) Destroy(ResultUI);
+        ResultUI = null;
     }
 
     public void Continue() {
@@ -706,7 +728,90 @@ public class GameMain : MonoBehaviour
         libSasa.play_music(sasaMusic, (float)1.0);
     }
 
-    private System.Collections.IEnumerator EndplayAnimation() {
-        yield return null;
+    private void BeforeEndplayAnimation() {
+        Debug.Log("EndplayAnimation");
+
+        ResultUI = Instantiate(ResultUIRaw, gameCanvas.transform);
+        ResultUI.SetActive(true);
+
+        var IlluCloneContainer = ResultUI.transform.Find("IlluCloneContainer").gameObject;
+
+        var cloneIlluImage = Instantiate(IlluImageGameObject, IlluCloneContainer.transform);
+        cloneIlluImage.GetComponent<RawImage>().color = new Color(1, 1, 1, 0);
+        cloneIlluImage.name = IlluImageGameObject.name;
+        var cloneIlluDimMask = Instantiate(IlluDimMaskGameObject, IlluCloneContainer.transform);
+        cloneIlluDimMask.GetComponent<RawImage>().color = new Color(1, 1, 1, 0);
+        cloneIlluDimMask.name = IlluDimMaskGameObject.name;
+    }
+
+    public void runAnimation(double duration, Action<double, double> action, Action endAction = null) {
+        action.Invoke(0, 0);
+        StartCoroutine(_runAnimation(duration, action, endAction));
+    }
+
+    private System.Collections.IEnumerator _runAnimation(double duration, Action<double, double> action, Action endAction) {
+        var start = Time.time;
+        while (true) {
+            var t = Math.Min(Time.time - start, duration);
+            action.Invoke(t, t / duration);
+
+            yield return null;
+            if (t >= duration) break;
+        }
+
+        action.Invoke(duration, 1.0);
+        endAction?.Invoke();
+    }
+
+    private void EndplayAnimation() {
+        var IlluCloneContainer = ResultUI.transform.Find("IlluCloneContainer").gameObject;
+        var ClonedIlluImage = IlluCloneContainer.transform.Find("IlluImage").gameObject;
+        var ClonedIlluDimMask = IlluCloneContainer.transform.Find("IlluDimMask").gameObject;
+        var LeftContainer = ResultUI.transform.Find("LeftContainer").gameObject;
+        var ScoreText = LeftContainer.transform.Find("Score").gameObject;
+        var AccText = LeftContainer.transform.Find("Acc").gameObject;
+        var Icon = LeftContainer.transform.Find("Icon").gameObject;
+        var DataItemContainer = LeftContainer.transform.Find("DataItemContainer").gameObject;
+        var ScoreRawPos = ScoreText.GetComponent<RectTransform>().localPosition;
+        var AccRawPos = AccText.GetComponent<RectTransform>().localPosition;
+        Action<string, string> SetDataItem = (string name, string value) => {
+            var dataItem = DataItemContainer.transform.Find(name).gameObject;
+            dataItem.GetComponent<ResultDataItem>().rightText = value;
+        };
+
+        Icon.GetComponent<RawImage>().texture = AllWeatherIcons[UnityEngine.Random.Range(0, AllWeatherIcons.Length)];
+
+        SetDataItem("Exact", (AUTOPLAY ? chart.comboTimes.Count : chart.playment.exact_cut).ToString());
+        SetDataItem("Perfect", chart.playment.perfect_cut.ToString());
+        SetDataItem("Great", chart.playment.great_cut.ToString());
+        SetDataItem("Good", chart.playment.good_cut.ToString());
+        SetDataItem("Bad", chart.playment.bad_cut.ToString());
+        SetDataItem("Miss", chart.playment.miss_cut.ToString());
+
+        var Score = chart.playment.score;
+        var Acc = chart.playment.acc;
+
+        runAnimation(1.0, (double t, double p) => {
+            var IlluAlpha = 1.0 - Math.Pow(1.0 - p, 3);
+            var IlluDimTarget = 0.9;
+            var IlluDim = chart.meta.background_dim + (IlluDimTarget - chart.meta.background_dim) * IlluAlpha;
+            var NumMultX = 1e10;
+            var MulMult = NumMultX - (NumMultX - 1) * p;
+
+            ClonedIlluImage.GetComponent<RawImage>().color = new Color(1, 1, 1, (float)IlluAlpha);
+            ClonedIlluDimMask.GetComponent<RawImage>().color = new Color(1, 1, 1, (float)IlluDim);
+            LeftContainer.GetComponent<RectTransform>().localPosition = new Vector3(0, (float)(-canvasSize.y * Math.Pow(1.0 - p, 4)), 0);
+            ScoreText.GetComponent<Text>().text = (Score * MulMult).ToString("D7");
+            AccText.GetComponent<Text>().text = ((Acc * MulMult) * 100).ToString("F2") + "%";
+        }, () => {
+            runAnimation(0.5, (double t, double p) => {
+                var ScoreAccDx = -canvasSize.x * 0.05 * (1.0 - Math.Pow(1.0 - p, 3));
+
+                ScoreText.GetComponent<RectTransform>().localPosition = new Vector3((float)(ScoreRawPos.x + ScoreAccDx), ScoreRawPos.y, ScoreRawPos.z);
+                AccText.GetComponent<RectTransform>().localPosition = new Vector3((float)(AccRawPos.x + ScoreAccDx), AccRawPos.y, AccRawPos.z);
+                Icon.GetComponent<RawImage>().color = new Color(1, 1, 1, (float)(1.0 - Math.Pow(1.0 - p, 3)));
+                Icon.GetComponent<RectTransform>().localRotation = Quaternion.Euler(0, 0, (float)((1.0 - Math.Pow(1.0 - p, 3)) * 360));
+            });
+        });
     }
 }

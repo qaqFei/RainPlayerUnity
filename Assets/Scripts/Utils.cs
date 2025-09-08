@@ -156,6 +156,11 @@ namespace Utils {
         public static uint ToUint(double[] rgba) {
             return (uint)(rgba[0] * 255f) << 24 | (uint)(rgba[1] * 255f) << 16 | (uint)(rgba[2] * 255f) << 8 | (uint)(rgba[3] * 255f);
         }
+
+        // fuck in other places
+        // public static double FuckUnityAlphaGammaFix(double value) {
+            // return 1.0 - Math.Pow(1.0 - value, 2.2);
+        // }
     }
 
     public class MathUtils {

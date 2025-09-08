@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -73.61667, y: 0}
+  m_AnchoredPosition: {x: -94.166664, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &937655578399691306
@@ -116,7 +116,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -284.3824, y: 55.02569}
-  m_SizeDelta: {x: 178.9, y: 24.225185}
+  m_SizeDelta: {x: 220, y: 24.225185}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &561588677895674610
 MonoBehaviour:
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c01f282ab40e0e4aba1ead50e839948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 178.9
+  width: 220
   height: 24.225185185185182
   fillColor: {r: 1, g: 1, b: 1, a: 0}
   outlineWidth: 1.9306666666666668
@@ -176,7 +176,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 73.61667, y: 0}
+  m_AnchoredPosition: {x: 94.166664, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &538790012051892776
@@ -256,7 +256,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 178.9, y: 24.225185}
+  m_SizeDelta: {x: 220, y: 24.225185}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3232988651267020751
 CanvasRenderer:
