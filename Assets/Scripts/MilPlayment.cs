@@ -297,6 +297,8 @@ namespace MilPlayment {
                             log($"bad note: {note.index}, offset: {offset}");
                             break;
                         }
+
+                        note.judge_state = (int)EnumJudgeState.Miss;
                     }
                 }
             }
