@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class ResultDataItem : MonoBehaviour
 {
@@ -17,75 +18,29 @@ public class ResultDataItem : MonoBehaviour
     public int textFontScale;
 
     [Header("References")]
-    public Material halfCircMaterial;
+    public Material strokeRoundRect;
 
     void Start() {
         UpdateMaterial();
     }
-    
-    private void SafeDestroyMaterial(Material mat) {
-        if (mat == null) return;
-
-        #if UNITY_EDITOR
-            if (Application.isPlaying) Destroy(mat);
-            else DestroyImmediate(mat, false);
-        #else
-            Destroy(mat);
-        #endif
-    }
 
     private void UpdateMaterial() {
-        var outline = transform.Find("Outline").gameObject;
-        var leftCircRawImage = outline.transform.Find("LeftCirc").gameObject.GetComponent<RawImage>();
-        var rightCircRawImage = outline.transform.Find("RightCirc").gameObject.GetComponent<RawImage>();
-        if (leftCircRawImage.material) SafeDestroyMaterial(leftCircRawImage.material);
-        if (rightCircRawImage.material) SafeDestroyMaterial(rightCircRawImage.material);
-        leftCircRawImage.material = new Material(halfCircMaterial);
-        rightCircRawImage.material = new Material(halfCircMaterial);
+        var board = transform.Find("Board").gameObject;
+        var rawim = board.GetComponent<RawImage>();
+        rawim.material = new Material(strokeRoundRect);
     }
 
-    private void UpdateFill() {
-        var fill = transform.Find("Fill").gameObject;
-        var rect = fill.transform.Find("Rect").gameObject;
-        var leftCirc = fill.transform.Find("LeftCirc").gameObject;
-        var rightCirc = fill.transform.Find("RightCirc").gameObject;
+    private void UpdateBoard() {
+        var board = transform.Find("Board").gameObject;
+        var rawim = board.GetComponent<RawImage>();
 
-        rect.GetComponent<RawImage>().color = fillColor;
-        leftCirc.GetComponent<RawImage>().color = fillColor;
-        rightCirc.GetComponent<RawImage>().color = fillColor;
-        rect.GetComponent<RectTransform>().sizeDelta = new Vector2((float)(width - height), (float)height);
-        leftCirc.GetComponent<RectTransform>().sizeDelta = new Vector2((float)height, (float)(height / 2));
-        rightCirc.GetComponent<RectTransform>().sizeDelta = new Vector2((float)height, (float)(height / 2));
-        leftCirc.transform.localPosition = new Vector3((float)(-(width - height) / 2), 0, 0);
-        rightCirc.transform.localPosition = new Vector3((float)((width - height) / 2), 0, 0);
-    }
-
-    private void UpdateOutline() {
-        var outline = transform.Find("Outline").gameObject;
-        var rectBartop = outline.transform.Find("RectBartop").gameObject;
-        var rectBarbottom = outline.transform.Find("RectBarbottom").gameObject;
-        var leftCirc = outline.transform.Find("LeftCirc").gameObject;
-        var rightCirc = outline.transform.Find("RightCirc").gameObject;
-
-        rectBartop.GetComponent<RawImage>().color = outlineColor;
-        rectBarbottom.GetComponent<RawImage>().color = outlineColor;
-        rectBartop.GetComponent<RectTransform>().sizeDelta = new Vector2((float)(width - height), (float)outlineWidth);
-        rectBarbottom.GetComponent<RectTransform>().sizeDelta = new Vector2((float)(width - height), (float)outlineWidth);
-        rectBartop.transform.localPosition = new Vector3(0, (float)(height / 2), 0);
-        rectBarbottom.transform.localPosition = new Vector3(0, (float)(-height / 2), 0);
-        leftCirc.GetComponent<RectTransform>().sizeDelta = new Vector2((float)height, (float)(height / 2));
-        rightCirc.GetComponent<RectTransform>().sizeDelta = new Vector2((float)height, (float)(height / 2));
-        leftCirc.transform.localPosition = new Vector3((float)(-(width - height) / 2), 0, 0);
-        rightCirc.transform.localPosition = new Vector3((float)((width - height) / 2), 0, 0);
-
-        var leftCircRawImage = leftCirc.GetComponent<RawImage>();
-        var rightCircRawImage = rightCirc.GetComponent<RawImage>();
-        leftCircRawImage.color = outlineColor;
-        rightCircRawImage.color = outlineColor;
-        leftCircRawImage.material.SetFloat("_R", (float)(1.0 - outlineWidth / (height / 2)));
-        leftCircRawImage.material.SetColor("_MultColor", outlineColor);
-        rightCircRawImage.material.SetFloat("_R", (float)(1.0 - outlineWidth / (height / 2)));
-        rightCircRawImage.material.SetColor("_MultColor", outlineColor);
+        board.GetComponent<RectTransform>().sizeDelta = new Vector2((float)width, (float)height);
+        rawim.material.SetFloat("_Width", (float)width);
+        rawim.material.SetFloat("_Height", (float)height);
+        rawim.material.SetColor("_FillColor", fillColor);
+        rawim.material.SetColor("_StrokeColor", outlineColor);
+        rawim.material.SetFloat("_StrokeWidth", (float)outlineWidth);
+        rawim.material.SetFloat("_RoundRadius", (float)height / 2);
     }
 
     private void UpdateText() {
@@ -108,9 +63,10 @@ public class ResultDataItem : MonoBehaviour
     }
 
     void Update() {
-        UpdateFill();
-        UpdateOutline();
+        UpdateBoard();
         UpdateText();
+
+        GetComponent<RectTransform>().sizeDelta = new Vector2((float)width, (float)height);
     }
 
     void OnValidate() {
