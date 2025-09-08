@@ -801,7 +801,7 @@ public class GameMain : MonoBehaviour
             ClonedIlluImage.GetComponent<RawImage>().color = new Color(1, 1, 1, (float)IlluAlpha);
             ClonedIlluDimMask.GetComponent<RawImage>().color = new Color(1, 1, 1, (float)IlluDim);
             LeftContainer.GetComponent<RectTransform>().localPosition = new Vector3(0, (float)(-canvasSize.y * Math.Pow(1.0 - p, 4)), 0);
-            ScoreText.GetComponent<Text>().text = (Score * MulMult).ToString("F0").PadLeft(7, "0");
+            ScoreText.GetComponent<Text>().text = (Score * MulMult).ToString("F0").PadLeft(7, '0'); // PadLeft 2nd arg must be char
             AccText.GetComponent<Text>().text = ((Acc * MulMult) * 100).ToString("F2") + "%";
         }, () => {
             runAnimation(0.5, (double t, double p) => {
