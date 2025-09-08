@@ -78,8 +78,10 @@ public class GameMain : MonoBehaviour
     private const double HOLD_DISAPPEAR_TIME = 0.2;
     private const double HIT_CIRC_DUR = 0.5;
     private const double PLATMENT_UPDATE_FPS = 120.0;
-    public double FLOW_SPEED = 1.66f;
+    public double FLOW_SPEED = 1.66;
     public bool AUTOPLAY = false;
+    public double OFFSET = 0.0;
+    public double SPEED = 1.0;
 
     private Vector2 canvasSize;
 
@@ -150,7 +152,7 @@ public class GameMain : MonoBehaviour
         UpdateInputSystem();
         if (!isPlaying) return;
         libSasa.recover_if_needed(sasaManager);
-        t = libSasa.get_music_position(sasaMusic);
+        t = libSasa.get_music_position(sasaMusic) - OFFSET / 1000 - chart.meta.offset;
 
         if (keyboard != null) {
             for (Key key = Key.A; key <= Key.Z; key++) {
@@ -259,7 +261,7 @@ public class GameMain : MonoBehaviour
                         particleSys = particle.GetComponent<ParticleSystem>();
                         particleSys.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                         var particleSysMain = particleSys.main;
-                        particleSysMain.duration = (float)(note.endTimeSec - t);
+                        particleSysMain.duration = (float)((note.endTimeSec - t) / SPEED);
                         autoReleaser = particle.GetComponent<AutoReleaseParticle>();
                         autoReleaser.pool = pool;
                         autoReleaser.activeHitParticles = line.activeHitParticles;
@@ -604,7 +606,7 @@ public class GameMain : MonoBehaviour
         if (sasaHitClip == null || sasaHitClip == IntPtr.Zero) throw new Exception("sasaHitClip is null");
         if (sasaDragClip == null || sasaDragClip == IntPtr.Zero) throw new Exception("sasaDragClip is null");
 
-        sasaMusic = libSasa.create_music(sasaManager, sasaAudioClip);
+        sasaMusic = libSasa.create_music(sasaManager, sasaAudioClip, SPEED);
         sasaHitSfx = libSasa.create_sfx(sasaManager, sasaHitClip);
         sasaDragSfx = libSasa.create_sfx(sasaManager, sasaDragClip);
     }
@@ -702,5 +704,9 @@ public class GameMain : MonoBehaviour
         userPaused = false;
         musicPaused = false;
         libSasa.play_music(sasaMusic, (float)1.0);
+    }
+
+    private System.Collections.IEnumerator EndplayAnimation() {
+        yield return null;
     }
 }

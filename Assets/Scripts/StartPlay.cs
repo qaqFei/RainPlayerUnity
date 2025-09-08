@@ -22,6 +22,8 @@ public class StartPlay : MonoBehaviour
     public IntPtr sasaManager;
     public GameObject flowSpeedSlider;
     public GameObject noteSizeSlider;
+    public GameObject offsetSlider;
+    public GameObject speedSlider;
     public Toggle autoplayToggle;
     private Button buttonSelf;
     private Button selectChartButton;
@@ -175,6 +177,8 @@ public class StartPlay : MonoBehaviour
                 gameMain.FLOW_SPEED = flowSpeedSlider.GetComponent<Slider>().value;
                 MilConst.MilConst.NOTE_SIZE_SCALE = noteSizeSlider.GetComponent<Slider>().value;
                 gameMain.AUTOPLAY = autoplayToggle.GetComponent<Toggle>().isOn;
+                gameMain.OFFSET = offsetSlider.GetComponent<Slider>().value;
+                gameMain.SPEED = speedSlider.GetComponent<Slider>().value;
                 hubCanvas.gameObject.SetActive(false);
 
                 setState("Chart loaded");

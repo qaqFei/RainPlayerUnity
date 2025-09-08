@@ -14,7 +14,7 @@ public class SliderTextUpdater : MonoBehaviour
 
     void Update() {
         if (!canunset || isset) {
-            GetComponent<Text>().text = slider.value.ToString("F2");
+            GetComponent<Text>().text = slider.value.ToString(format);
         }
     }
 

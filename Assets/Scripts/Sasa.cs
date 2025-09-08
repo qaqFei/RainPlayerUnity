@@ -22,7 +22,7 @@ namespace Sasa {
         [DllImport(DLL_NAME)] public static extern bool recover_if_needed(IntPtr manager_ptr);
         [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
         [DllImport(DLL_NAME)] public static extern IntPtr create_sfx(IntPtr manager_ptr, IntPtr clip_ptr);
-        [DllImport(DLL_NAME)] public static extern IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr);
+        [DllImport(DLL_NAME)] public static extern IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr, double playback_rate);
     }
 
     public class libSasa {
@@ -121,9 +121,9 @@ namespace Sasa {
             return sfx_ptr;
         }
 
-        public static IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr) {
+        public static IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr, double playback_rate = 1.0) {
             if (!managers.Contains(manager_ptr) || !clips.Contains(clip_ptr)) return IntPtr.Zero;
-            IntPtr music_ptr = _libSasa.create_music(manager_ptr, clip_ptr);
+            IntPtr music_ptr = _libSasa.create_music(manager_ptr, clip_ptr, playback_rate);
             lock (setLock) musics.Add(music_ptr);
             return music_ptr;
         }
