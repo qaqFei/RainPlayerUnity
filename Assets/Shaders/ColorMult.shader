@@ -46,8 +46,8 @@ Shader "Custom/ColorMult"
             fixed4 frag (v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
+                i.color.a = 1.0 - pow(1.0 - i.color.a, 2.2); // Fuck Unity's Gamma Correction
                 col *= i.color;
-                col.a = 1.0 - pow(1.0 - col.a, 2.2); // Fuck Unity's Gamma Correction
                 return col;
             }
             ENDCG
