@@ -12,7 +12,7 @@ using Sasa;
 using MilDataStructs;
 using MilConst;
 
-public class StartPlay : MonoBehaviour
+public class StartPlay : MonoBehaviour, I18nSupported
 {
     public SelectChartButton chartSelector;
     public Text stateText;
@@ -35,6 +35,8 @@ public class StartPlay : MonoBehaviour
     private MilChart chart;
     private IntPtr sasaAudioClip;
 
+    private Action stateSetter;
+
     public void Start() {
         if (stateText != null) stateText.text = "";
         if (chartSelector != null) selectChartButton = chartSelector.GetComponent<Button>();
@@ -50,8 +52,13 @@ public class StartPlay : MonoBehaviour
         
     }
 
-    void setState(string state) {
-        if (stateText != null) stateText.text = state;
+    void setStateSetter(Action setter) {
+        stateSetter = setter;
+        stateSetter.Invoke();
+    }
+
+    public void OnI18nChanged() {
+        stateSetter?.Invoke();
     }
 
     void disableButton() {
@@ -70,17 +77,23 @@ public class StartPlay : MonoBehaviour
 
         var selectedPath = chartSelector.selectedPath;
         if (selectedPath == null) {
-            setState("No chart selected");
+            setStateSetter(() => {
+                stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-NoChartSelected");
+            });
             return;
         };
         Debug.Log($"Selected path: {selectedPath}");
 
         if (!File.Exists(selectedPath)) {
-            setState($"File not found: {selectedPath}");
+            setStateSetter(() => {
+                stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-FileNotFound")}: {selectedPath}";
+            });
             return;
         }
 
-        setState("Loading chart...");
+        setStateSetter(() => {
+            stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-LoadingChart");
+        });
         disableButton();
 
         try {
@@ -181,11 +194,15 @@ public class StartPlay : MonoBehaviour
                 gameMain.SPEED = speedSlider.GetComponent<Slider>().value;
                 hubCanvas.gameObject.SetActive(false);
 
-                setState("Chart loaded");
+                setStateSetter(() => {
+                    stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-ChartLoaded");
+                });
                 gameMain.IntoPlay();
             }
         } catch (Exception e) {
-            setState($"Error: {e.Message}");
+            setStateSetter(() => {
+                stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-Error")}: {e.Message}";
+            });
             Debug.Log($"Error when loading chart: {e.Message}");
             Debug.LogException(e);
         } finally {

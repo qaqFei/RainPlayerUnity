@@ -1,21 +1,34 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+
+using MilConst;
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
     using NativeFileBrowser;
 #endif
 
-public class SelectChartButton : MonoBehaviour
+public class SelectChartButton : MonoBehaviour, I18nSupported
 {
     public string selectedPath;
     public Text pathText;
+    private bool resetedPathText;
+    private string ChartPathI18nKey = "ChartPath";
+    private Action pathTextSetter;
 
     void Start() {
-        if (pathText != null) pathText.text = "Chart path: (none)";
+        resetedPathText = false;
     }
 
     void Update() {
-        
+        if (!resetedPathText) {
+            if (pathText != null) {
+                SetTextSetter(() => {
+                    pathText.text = $"{MilConst.MilConst.i18n.GetText(ChartPathI18nKey)}: ({MilConst.MilConst.i18n.GetText("ChartPathNotSelected")})";
+                });
+            }
+            resetedPathText = true;
+        }
     }
 
     #if UNITY_ANDROID
@@ -36,7 +49,9 @@ public class SelectChartButton : MonoBehaviour
 
         if (pathText != null) {
             Debug.Log("Updating path text");
-            pathText.text = $"Chart path: {selectedPath}";
+            SetTextSetter(() => {
+                pathText.text = $"{MilConst.MilConst.i18n.GetText(ChartPathI18nKey)}: {selectedPath}";
+            });
         }
     }
 
@@ -67,7 +82,9 @@ public class SelectChartButton : MonoBehaviour
                 NativeFilePicker.RequestPermissionAsync((permission) => {
                     if (permission != NativeFilePicker.Permission.Granted) {
                         Debug.LogWarning("File access permission denied");
-                        pathText.text = "Chart path: (permission denied)";
+                        SetTextSetter(() => {
+                            pathText.text = $"{MilConst.MilConst.i18n.GetText(ChartPathI18nKey)}: ({MilConst.MilConst.i18n.GetText("PermissionDenied")})";
+                        });
                         return;
                     }
                     SelectAndroid();
@@ -76,5 +93,14 @@ public class SelectChartButton : MonoBehaviour
                 SelectAndroid();
             }
         #endif
+    }
+
+    private void SetTextSetter(Action setter) {
+        pathTextSetter = setter;
+        pathTextSetter.Invoke();
+    }
+
+    public void OnI18nChanged() {
+        pathTextSetter?.Invoke();
     }
 }

@@ -1,0 +1,40 @@
+{
+    "en": {
+        "__LangName": "English",
+        "Language": "Language",
+        "ChooseChart": "Choose Chart",
+        "ChartPath": "Chart Path",
+        "FlowSpeed": "FlowSpeed",
+        "NoteSize": "NoteSize",
+        "OffsetMs": "Offset (ms)",
+        "Speed": "Speed",
+        "Autoplay": "Autoplay",
+        "Play": "Play",
+        "PermissionDenied": "permission denied",
+        "ChartPathNotSelected": "none",
+        "StartPlay-NoChartSelected": "No chart selected",
+        "StartPlay-FileNotFound": "File not found",
+        "StartPlay-LoadingChart": "Loading Chart...",
+        "StartPlay-ChartLoaded": "Chart Loaded",
+        "StartPlay-Error": "Error"
+    },
+    "zh": {
+        "__LangName": "简体中文",
+        "Language": "语言",
+        "ChooseChart": "选择谱面",
+        "ChartPath": "谱面路径",
+        "FlowSpeed": "流速",
+        "NoteSize": "音符大小",
+        "OffsetMs": "偏移 (ms)",
+        "Speed": "速度",
+        "Autoplay": "自动播放",
+        "Play": "启动！！",
+        "PermissionDenied": "权限拒绝",
+        "ChartPathNotSelected": "未选择",
+        "StartPlay-NoChartSelected": "未选择谱面",
+        "StartPlay-FileNotFound": "文件不存在",
+        "StartPlay-LoadingChart": "加载谱面...",
+        "StartPlay-ChartLoaded": "加载完成",
+        "StartPlay-Error": "错误"
+    }
+}
