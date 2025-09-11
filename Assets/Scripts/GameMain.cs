@@ -521,9 +521,14 @@ public class GameMain : MonoBehaviour
 
         var progress = music_position / music_length;
         GameUI.transform.Find("Progressbar").gameObject.GetComponent<RectTransform>().localScale = new Vector2((float)(progress * canvasSize.x), 1);
+        var music_ended = music_position + 1e-2 >= music_length;
 
-        if (t > chart.comboTimes[chart.comboTimes.Count - 1] + 0.5 || music_position + 1e-2 >= music_length) {
+        if ((chart.comboTimes.Count != 0 && t > 5.0 + 0.5) || music_ended) {
             isPlaying = false;
+            if (!music_ended) {
+                StartCoroutine(libSasa.fadeout_music(sasaMusic, 0.75));
+            }
+
             BeforeEndplayAnimation();
             EndplayAnimation();
         }

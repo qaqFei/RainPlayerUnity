@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
 namespace Sasa {
     internal class _libSasa {
@@ -126,6 +127,25 @@ namespace Sasa {
             IntPtr music_ptr = _libSasa.create_music(manager_ptr, clip_ptr, playback_rate);
             lock (setLock) musics.Add(music_ptr);
             return music_ptr;
+        }
+
+        public static System.Collections.IEnumerator fadeout_music(IntPtr music_ptr, double time, double start_volume = 1.0) {
+            if (!musics.Contains(music_ptr)) yield break;
+            
+            var st = (double)Time.time;
+            set_music_volume(music_ptr, (float)start_volume);
+            
+            while (true) {
+                var t = (double)Time.time - st;
+                if (t >= time) break;
+                
+                var v = start_volume * (1.0 - t / time);
+                set_music_volume(music_ptr, (float)Math.Max(0.0, v));
+                yield return null;
+            }
+            
+            set_music_volume(music_ptr, 0f);
+            pause_music(music_ptr);
         }
     }
 }
