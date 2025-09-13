@@ -1133,6 +1133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 178575369}
   - component: {fileID: 178575370}
+  - component: {fileID: 178575371}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -1225,6 +1226,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &178575371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 178575368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 0
+  key: OffsetMs
 --- !u!1 &191179859
 GameObject:
   m_ObjectHideFlags: 0
@@ -1874,6 +1889,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 292387520}
   m_CullTransparentMesh: 1
+--- !u!21 &297915120
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrokeRoundRect
+  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EnableExternalAlpha: 0
+    - _Height: 24.225185
+    - _R: 0.2
+    - _RoundRadius: 12.112593
+    - _StrokeWidth: 1.9306667
+    - _Width: 220
+    - _ZWrite: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &299884949
 GameObject:
   m_ObjectHideFlags: 0
@@ -2452,6 +2523,7 @@ GameObject:
   - component: {fileID: 399683950}
   - component: {fileID: 399683949}
   - component: {fileID: 399683948}
+  - component: {fileID: 399683951}
   m_Layer: 5
   m_Name: Input
   m_TagString: Untagged
@@ -2586,6 +2658,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 399683946}
   m_CullTransparentMesh: 1
+--- !u!114 &399683951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 399683946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 3
+  key: TextAtCOMBO
 --- !u!1 &406338134
 GameObject:
   m_ObjectHideFlags: 0
@@ -2777,6 +2863,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 448127223}
   m_CullTransparentMesh: 1
+--- !u!21 &456859523
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrokeRoundRect
+  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EnableExternalAlpha: 0
+    - _Height: 24.225185
+    - _R: 0.2
+    - _RoundRadius: 12.112593
+    - _StrokeWidth: 1.9306667
+    - _Width: 220
+    - _ZWrite: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &459010517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2949,7 +3091,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 467713879}
   m_CullTransparentMesh: 1
---- !u!21 &467756741
+--- !u!21 &481500099
 Material:
   serializedVersion: 8
   m_ObjectHideFlags: 0
@@ -3724,6 +3866,62 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8433142845629540354, guid: cf33903e322bf0540b5e433996eb5ef9, type: 3}
   m_PrefabInstance: {fileID: 642880853}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &662981174
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrokeRoundRect
+  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EnableExternalAlpha: 0
+    - _Height: 24.225185
+    - _R: 0.2
+    - _RoundRadius: 12.112593
+    - _StrokeWidth: 1.9306667
+    - _Width: 220
+    - _ZWrite: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &672744162
 GameObject:
   m_ObjectHideFlags: 0
@@ -4491,62 +4689,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 893423728}
   m_CullTransparentMesh: 1
---- !u!21 &906427327
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: StrokeRoundRect
-  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Height: 24.225185
-    - _R: 0.2
-    - _RoundRadius: 12.112593
-    - _StrokeWidth: 1.9306667
-    - _Width: 220
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
-    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &908648535
 GameObject:
   m_ObjectHideFlags: 0
@@ -4703,6 +4845,7 @@ GameObject:
   m_Component:
   - component: {fileID: 943583597}
   - component: {fileID: 943583598}
+  - component: {fileID: 943583599}
   m_Layer: 5
   m_Name: ELIndicatorToggle
   m_TagString: Untagged
@@ -4779,6 +4922,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &943583599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 943583596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 1
+  key: EarlyLateInciator
 --- !u!1001 &955485632
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5018,6 +5175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 982476809}
   - component: {fileID: 982476810}
+  - component: {fileID: 982476811}
   m_Layer: 5
   m_Name: ChordHLToggle
   m_TagString: Untagged
@@ -5094,6 +5252,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &982476811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 982476808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 1
+  key: ChordHighlighted
 --- !u!1 &985455391
 GameObject:
   m_ObjectHideFlags: 0
@@ -5490,62 +5662,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!21 &1042487925
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: StrokeRoundRect
-  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Height: 24.225185
-    - _R: 0.2
-    - _RoundRadius: 12.112593
-    - _StrokeWidth: 1.9306667
-    - _Width: 220
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
-    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1047857011
 GameObject:
   m_ObjectHideFlags: 0
@@ -6158,6 +6274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1230812375}
   - component: {fileID: 1230812376}
+  - component: {fileID: 1230812377}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -6250,6 +6367,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &1230812377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1230812374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 0
+  key: Speed
 --- !u!1 &1271145705
 GameObject:
   m_ObjectHideFlags: 0
@@ -6260,6 +6391,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1271145706}
   - component: {fileID: 1271145707}
+  - component: {fileID: 1271145708}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -6352,6 +6484,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &1271145708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271145705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 0
+  key: FlowSpeed
 --- !u!1 &1276509412
 GameObject:
   m_ObjectHideFlags: 0
@@ -6597,118 +6743,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1312377769}
   m_CullTransparentMesh: 1
---- !u!21 &1317664618
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: StrokeRoundRect
-  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Height: 24.225185
-    - _R: 0.2
-    - _RoundRadius: 12.112593
-    - _StrokeWidth: 1.9306667
-    - _Width: 220
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
-    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
---- !u!21 &1330849340
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: StrokeRoundRect
-  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Height: 24.225185
-    - _R: 0.2
-    - _RoundRadius: 12.112593
-    - _StrokeWidth: 1.9306667
-    - _Width: 220
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
-    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1369631396
 GameObject:
   m_ObjectHideFlags: 0
@@ -6839,6 +6873,62 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1369805044}
   m_CullTransparentMesh: 1
+--- !u!21 &1380255804
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrokeRoundRect
+  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EnableExternalAlpha: 0
+    - _Height: 24.225185
+    - _R: 0.2
+    - _RoundRadius: 12.112593
+    - _StrokeWidth: 1.9306667
+    - _Width: 220
+    - _ZWrite: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1382861441
 GameObject:
   m_ObjectHideFlags: 0
@@ -6849,6 +6939,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1382861442}
   - component: {fileID: 1382861443}
+  - component: {fileID: 1382861444}
   m_Layer: 5
   m_Name: DebugToggle
   m_TagString: Untagged
@@ -6925,6 +7016,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &1382861444
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1382861441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 1
+  key: Debug
 --- !u!1 &1400554686
 GameObject:
   m_ObjectHideFlags: 0
@@ -7304,6 +7409,62 @@ RectTransform:
   m_AnchoredPosition: {x: 89.245, y: -2.2718124}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0, y: 1}
+--- !u!21 &1454140457
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StrokeRoundRect
+  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _EnableExternalAlpha: 0
+    - _Height: 24.225185
+    - _R: 0.2
+    - _RoundRadius: 12.112593
+    - _StrokeWidth: 1.9306667
+    - _Width: 220
+    - _ZWrite: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
+    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &1467974282
 GameObject:
   m_ObjectHideFlags: 0
@@ -7678,6 +7839,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1528458005}
   - component: {fileID: 1528458006}
+  - component: {fileID: 1528458007}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Untagged
@@ -7770,6 +7932,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 1
+--- !u!114 &1528458007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1528458004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 0
+  key: NoteSize
 --- !u!1 &1547863167
 GameObject:
   m_ObjectHideFlags: 0
@@ -7857,6 +8033,7 @@ GameObject:
   - component: {fileID: 1577361573}
   - component: {fileID: 1577361572}
   - component: {fileID: 1577361571}
+  - component: {fileID: 1577361574}
   m_Layer: 5
   m_Name: LangChoose
   m_TagString: Untagged
@@ -7993,6 +8170,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577361569}
   m_CullTransparentMesh: 1
+--- !u!114 &1577361574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577361569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 2
+  key: Language
 --- !u!1 &1605209203
 GameObject:
   m_ObjectHideFlags: 0
@@ -9271,62 +9462,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1743135357}
   m_CullTransparentMesh: 1
---- !u!21 &1784151387
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: StrokeRoundRect
-  m_Shader: {fileID: 4800000, guid: a425963f22cec7a47bb985f8bbcc0be7, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: bf5d4982d5ef6ad4bb735a9f68a7396e, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MaskTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _NormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _EnableExternalAlpha: 0
-    - _Height: 24.225185
-    - _R: 0.2
-    - _RoundRadius: 12.112593
-    - _StrokeWidth: 1.9306667
-    - _Width: 220
-    - _ZWrite: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _FillColor: {r: 1, g: 1, b: 1, a: 0}
-    - _MultColor: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
-    - _StrokeColor: {r: 1, g: 1, b: 1, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1826276810
 GameObject:
   m_ObjectHideFlags: 0
@@ -9432,6 +9567,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1866089438}
   - component: {fileID: 1866089439}
+  - component: {fileID: 1866089440}
   m_Layer: 5
   m_Name: AutoplayToggle
   m_TagString: Untagged
@@ -9508,6 +9644,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &1866089440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1866089437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 1
+  key: Autoplay
 --- !u!1 &1905313615
 GameObject:
   m_ObjectHideFlags: 0
@@ -10468,6 +10618,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1983726970}
   - component: {fileID: 1983726971}
+  - component: {fileID: 1983726972}
   m_Layer: 5
   m_Name: ShowTouchPointToggle
   m_TagString: Untagged
@@ -10544,6 +10695,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &1983726972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1983726969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54b24798e8919b4cb285eac2604c7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settingType: 1
+  key: ShowTouchPoint
 --- !u!1 &1991842354
 GameObject:
   m_ObjectHideFlags: 0
