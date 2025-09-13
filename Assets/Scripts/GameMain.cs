@@ -700,6 +700,11 @@ public class GameMain : MonoBehaviour
         hitCircInstances.Clear();
 
         GameUI.transform.Find("Combo").gameObject.GetComponent<RectTransform>().localScale = new Vector3(ComboRawScale, ComboRawScale, 1);
+
+        var elc_transform = GameUI.transform.Find("EarlyLateContainer");
+        var elballs = new List<Transform>(elc_transform.childCount);
+        foreach (Transform t in elc_transform) elballs.Add(t);
+        elballs.ForEach(c => Destroy(c.gameObject));
     }
 
     public void BackToHub() {
