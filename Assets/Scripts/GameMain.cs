@@ -92,6 +92,7 @@ public class GameMain : MonoBehaviour
     public bool ISDEBUG = false;
     public bool CHORDHL = true;
     public bool ELINDICATOR = false;
+    public string COMBOTEXT = "";
 
     private Vector2 canvasSize;
     private float ComboRawScale;
@@ -534,7 +535,7 @@ public class GameMain : MonoBehaviour
         GameUI.transform.Find("Combo").gameObject.GetComponent<Text>().text = combo.ToString();
         GameUI.transform.Find("Score").gameObject.GetComponent<Text>().text = ((int)score).ToString("D7");
         GameUI.transform.Find("Acc").gameObject.GetComponent<Text>().text = $"{(acc * 100).ToString("F2")}%";
-        GameUI.transform.Find("ComboText").gameObject.GetComponent<Text>().text = AUTOPLAY ? "AUTOPLAY" : "COMBO";
+        GameUI.transform.Find("ComboText").gameObject.GetComponent<Text>().text = COMBOTEXT == "" ? (AUTOPLAY ? "AUTOPLAY" : "COMBO") : ((AUTOPLAY && COMBOTEXT != "AUTOPLAY") ? "  ヽ(*。>Д<)o゜" : COMBOTEXT);
 
         var progress = music_position / music_length;
         GameUI.transform.Find("Progressbar").gameObject.GetComponent<RectTransform>().localScale = new Vector2((float)(progress * canvasSize.x), 1);

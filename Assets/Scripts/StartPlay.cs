@@ -28,6 +28,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
     public Toggle debugToggle;
     public Toggle ChordHLToggle;
     public Toggle ELIndicatorToggle;
+    public InputField comboTextInputField;
     private Button buttonSelf;
     private Button selectChartButton;
 
@@ -198,6 +199,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 gameMain.ISDEBUG = debugToggle.GetComponent<Toggle>().isOn;
                 gameMain.CHORDHL = ChordHLToggle.GetComponent<Toggle>().isOn;
                 gameMain.ELINDICATOR = ELIndicatorToggle.GetComponent<Toggle>().isOn;
+                gameMain.COMBOTEXT = comboTextInputField.GetComponent<InputField>().text;
                 hubCanvas.gameObject.SetActive(false);
 
                 setStateSetter(() => {
