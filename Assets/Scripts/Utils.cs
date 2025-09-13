@@ -354,4 +354,78 @@ namespace Utils {
             return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y1 - y2, 2));
         }
     }
+
+    public class AnimUtils {
+        public class ValueTransformer {
+            public Func<double> time_getter = () => Time.time;
+            public Func<double, double> ease;
+            public double animation_time;
+            private double last_change = double.NegativeInfinity;
+            private double last_value = double.NegativeInfinity;
+            private double target_value = double.NegativeInfinity;
+            private bool inited = false;
+            private double inner_value = double.NegativeInfinity;
+
+            public ValueTransformer(Func<double, double> ease = null, double animation_time = 0.5) {
+                this.ease = ease ?? (t => t);
+                this.animation_time = animation_time;
+            }
+
+            public void init(double value) {
+                last_value = value;
+                last_change = time_getter();
+                target_value = value;
+            }
+
+            public void updater() {
+                if (double.IsNegativeInfinity(last_change)) {
+                    inner_value = target_value;
+                    return;
+                }
+
+                var p = (time_getter() - last_change) / animation_time;
+
+                if (p >= 1.0) {
+                    inner_value = target_value;
+                } else {
+                    inner_value = last_value + (target_value - last_value) * ease(p);
+                }
+            }
+
+            public double target {
+                get { return target_value; }
+                set {
+                    if (!inited) {
+                        inited = true;
+                        init(value);
+                    }
+
+                    last_value = this.value;
+                    last_change = time_getter();
+                    target_value = value;
+                }
+            }
+
+            public double weak_target {
+                get { return target_value; }
+                set {
+                    if (target != value) {
+                        target = value;
+                    }
+                }
+            }
+
+            public double value { get {
+                updater();
+                return inner_value;
+            } }
+
+            public bool enable {
+                get { return inited; }
+                set {
+                    inited = value;
+                }
+            }
+        }
+    }
 }

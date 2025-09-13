@@ -94,6 +94,7 @@ public class GameMain : MonoBehaviour
     public bool ELINDICATOR = false;
 
     private Vector2 canvasSize;
+    private float ComboRawScale;
 
     private class HitCircInsWapper
     {
@@ -111,6 +112,7 @@ public class GameMain : MonoBehaviour
     void Start() {
         UpdateInputSystem();
         ResultUIRaw.SetActive(false);
+        ComboRawScale = GameUI.transform.Find("Combo").gameObject.GetComponent<RectTransform>().localScale.x;
     }
 
     void Awake() {
@@ -523,6 +525,12 @@ public class GameMain : MonoBehaviour
         var score = AUTOPLAY ? (double)combo / chart.comboTimes.Count * 1010000 : chart.playment.score;
         var acc = AUTOPLAY ? 1.0 : chart.playment.acc;
 
+        chart.OnComboUpdated(combo);
+        chart.TryresetComboScale();
+
+        var combo_scale = ComboRawScale * (float)chart.comboScaleValueTrans.value;
+        GameUI.transform.Find("Combo").gameObject.GetComponent<RectTransform>().localScale = new Vector3(combo_scale, combo_scale, 1);
+
         GameUI.transform.Find("Combo").gameObject.GetComponent<Text>().text = combo.ToString();
         GameUI.transform.Find("Score").gameObject.GetComponent<Text>().text = ((int)score).ToString("D7");
         GameUI.transform.Find("Acc").gameObject.GetComponent<Text>().text = $"{(acc * 100).ToString("F2")}%";
@@ -661,7 +669,7 @@ public class GameMain : MonoBehaviour
         libSasa.pause_music(sasaMusic);
     }
 
-    void ReleasePrefabs() {
+    void RestoreGame() {
         foreach (var line in chart.lines) {
             ResUtils.DestroyGameObjectPool(line.notePool);
             ResUtils.DestroyGameObjectPool(line.holdNotePool);
@@ -690,11 +698,13 @@ public class GameMain : MonoBehaviour
             insW.ins = null;
         }
         hitCircInstances.Clear();
+
+        GameUI.transform.Find("Combo").gameObject.GetComponent<RectTransform>().localScale = new Vector3(ComboRawScale, ComboRawScale, 1);
     }
 
     public void BackToHub() {
         isPlaying = false;
-        ReleasePrefabs();
+        RestoreGame();
         DestoryResultUI();
         gameCanvas.gameObject.SetActive(false);
         OnDestroy();
@@ -704,7 +714,7 @@ public class GameMain : MonoBehaviour
 
     public void Retry() {
         isPlaying = false;
-        ReleasePrefabs();
+        RestoreGame();
         DestoryResultUI();
         IntoPlay(true);
     }
