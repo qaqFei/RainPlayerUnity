@@ -12,9 +12,10 @@ public class SavableSetting : MonoBehaviour
 
     public SavableSettingType settingType;
     public string key;
+    public bool disabled;
     private bool inited;
 
-    private bool HasKey() {
+    public bool HasKey() {
         return !string.IsNullOrEmpty(key) && PlayerPrefs.HasKey(_key);
     }
 
@@ -22,8 +23,8 @@ public class SavableSetting : MonoBehaviour
         get { return $"SavableSetting_{key}"; }
     }
 
-    private void LoadValue() {
-        if (!HasKey()) return;
+    public void LoadValue() {
+        if (!HasKey() || disabled) return;
 
         switch (settingType) {
             case SavableSettingType.Slider:
@@ -58,7 +59,9 @@ public class SavableSetting : MonoBehaviour
             LoadValue();
             inited = true;
         }
-        
+
+        if (disabled) return;
+
         switch (settingType) {
             case SavableSettingType.Slider:
                 if (!HasKey() || PlayerPrefs.GetFloat(_key) != GetComponent<Slider>().value) {
@@ -84,5 +87,9 @@ public class SavableSetting : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    public string GetRealKey() {
+        return _key;
     }
 }

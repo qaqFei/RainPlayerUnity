@@ -21,7 +21,8 @@
         "ChordHighlighted": "Chord highlighted",
         "EarlyLateIndicator": "Early/Late indicator",
         "TextAtCOMBO": "Text At \"COMBO\"",
-        "ShowTouchPoint": "Show touch point"
+        "ShowTouchPoint": "Show touch point",
+        "ResetSettings": "Reset Settings"
     },
     "zh": {
         "__LangName": "简体中文",
@@ -45,6 +46,7 @@
         "ChordHighlighted": "多押提示",
         "EarlyLateIndicator": "Early/Late 指示器",
         "TextAtCOMBO": "\"COMBO\" 处文字",
-        "ShowTouchPoint": "显示触摸点"
+        "ShowTouchPoint": "显示触摸点",
+        "ResetSettings": "重置设置"
     }
 }
