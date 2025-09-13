@@ -18,7 +18,8 @@
         "StartPlay-ChartLoaded": "Chart Loaded",
         "StartPlay-Error": "Error",
         "Debug": "Debug",
-        "ChordHighlighted": "Chord highlighted"
+        "ChordHighlighted": "Chord highlighted",
+        "EarlyLateIndicator": "Early/Late indicator"
     },
     "zh": {
         "__LangName": "简体中文",
@@ -39,6 +40,7 @@
         "StartPlay-ChartLoaded": "加载完成",
         "StartPlay-Error": "错误",
         "Debug": "调试",
-        "ChordHighlighted": "多押提示"
+        "ChordHighlighted": "多押提示",
+        "EarlyLateIndicator": "Early/Late 指示器"
     }
 }

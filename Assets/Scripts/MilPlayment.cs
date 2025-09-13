@@ -42,6 +42,7 @@ namespace MilPlayment {
         public int good_cut;
         public int bad_cut;
         public int miss_cut;
+        public Action<int, double> OnPlaymentNoteJudgeCallback;
         private double _acc;
         private double _fullacc;
         private double hold_lasts;
@@ -252,6 +253,8 @@ namespace MilPlayment {
                             note.head_judged = true;
                             note.hitParticleOffset = offset;
 
+                            OnPlaymentNoteJudgeCallback?.Invoke(note.judge_state, offset);
+
                             if (note.isHold) {
                                 note.judge_holdlastcheck = t;
                                 touch_hold_end = Math.Max(note.endTimeSec, touch_hold_end);
@@ -289,6 +292,7 @@ namespace MilPlayment {
                         }
 
                         if (note.judge_state == (int)EnumJudgeState.Bad && !note.isHold) {
+                            OnPlaymentNoteJudgeCallback?.Invoke(note.judge_state, offset);
                             note.judge_time = t;
                             note.judge_hited = true;
                             _submit_accitem(0.15);
@@ -372,6 +376,7 @@ namespace MilPlayment {
                     note.judge_time = Math.Max(note.timeSec, t);
                     note.judge_state = (int)EnumJudgeState.Exact;
                     note.hitParticleOffset = note.judge_time - note.timeSec;
+                    OnPlaymentNoteJudgeCallback?.Invoke(note.judge_state, 0.0);
                     
                     foreach (var tc in note.prejudge_touches) {
                         tc.hold_touch_end = touch_hold_end;
@@ -396,6 +401,10 @@ namespace MilPlayment {
                     _submit_accitem(0.0);
                     miss_cut++;
 
+                    if (!note.head_judged) {
+                        OnPlaymentNoteJudgeCallback?.Invoke(note.judge_state, t - note.timeSec);
+                    }
+
                     if (note.holdHitParticle != null) {
                         note.holdHitParticle.GetComponent<ParticleSystem>().Stop();
                     }
@@ -418,6 +427,7 @@ namespace MilPlayment {
 
                 if (!note.isHold && !note.head_judged && !note.judge_ismiss && t - note.timeSec >= JudgeRange.Bad) {
                     note.judge_ismiss = true;
+                    OnPlaymentNoteJudgeCallback?.Invoke(note.judge_state, t - note.timeSec);
                     note.judge_misstime = t;
                     _submit_accitem(0.0);
                     miss_cut++;

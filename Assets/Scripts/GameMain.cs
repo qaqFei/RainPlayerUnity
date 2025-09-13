@@ -39,6 +39,7 @@ public class GameMain : MonoBehaviour
     public GameObject goodHitParticlePrefab;
     public GameObject goodHoldHitParticlePrefab;
     public GameObject notePolyDisplayPrefab;
+    public GameObject EarlyLateBallPrefab;
     public GameObject hitParticlesContainer;
     public GameObject hitCircPrefab;
     public GameObject hitCircsContainer;
@@ -90,6 +91,7 @@ public class GameMain : MonoBehaviour
     public double SPEED = 1.0;
     public bool ISDEBUG = false;
     public bool CHORDHL = true;
+    public bool ELINDICATOR = false;
 
     private Vector2 canvasSize;
 
@@ -567,6 +569,7 @@ public class GameMain : MonoBehaviour
 
         chart.Init();
         chart.playment = new MilPlayment.MilPlayment(chart, Screen.width, Screen.height, AUTOPLAY);
+        chart.playment.OnPlaymentNoteJudgeCallback = OnPlaymentNoteJudge;
         lastupdate_playment_time = -1.0 / PLATMENT_UPDATE_FPS;
 
         GameUI.transform.Find("Title").gameObject.GetComponent<TextOverflowEllipsis>().SetOverflowEllipsisText(chart.meta.name);
@@ -766,6 +769,42 @@ public class GameMain : MonoBehaviour
     public void runAnimation(double duration, Action<double, double> action, Action endAction = null) {
         action.Invoke(0, 0);
         StartCoroutine(_runAnimation(duration, action, endAction));
+    }
+
+    public void OnPlaymentNoteJudge(int judge_type, double offset) {
+        if (!ELINDICATOR) return;
+        // if (judge_type == (int)MilPlayment.EnumJudgeState.Exact || judge_type == (int)MilPlayment.EnumJudgeState.Perfect) return;
+        Color ballColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+
+        if (judge_type == (int)MilPlayment.EnumJudgeState.Exact || judge_type == (int)MilPlayment.EnumJudgeState.Perfect) {
+            ballColor = new Color(0.8627451f, 0.7921569f, 1.0f, 1.0f);
+        } else if (judge_type == (int)MilPlayment.EnumJudgeState.Great || judge_type == (int)MilPlayment.EnumJudgeState.Good) {
+            ballColor = new Color(0.4784314f, 0.9137255f, 0.772549f, 1.0f);
+        }
+
+        var dx = canvasSize.x * 0.2 * offset * 6.0;
+        var ball = Instantiate(EarlyLateBallPrefab, GameUI.transform.Find("EarlyLateContainer").transform);
+        var rim = ball.GetComponent<RawImage>();
+        var rawalpha = rim.color.a;
+        ball.transform.localPosition = new Vector3((float)dx, 0, 0);
+        Action<double> setalpha = (double alpha) => {
+            ballColor.a = rawalpha * (float)alpha;
+            rim.color = ballColor;
+        };
+
+        runAnimation(0.1, (double t, double p) => {
+            setalpha.Invoke(p);
+        }, () => {
+            runAnimation(0.2, (double t, double p) => {
+                // do nothing
+            }, () => {
+                runAnimation(0.2, (double t, double p) => {
+                    setalpha.Invoke(1.0 - p);
+                }, () => {
+                    Destroy(ball);
+                });
+            });
+        });
     }
 
     private System.Collections.IEnumerator _runAnimation(double duration, Action<double, double> action, Action endAction) {
