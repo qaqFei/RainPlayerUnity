@@ -229,6 +229,7 @@ namespace MilPlayment {
 
             if (touch == null) {
                 touch = new Touch(sig, x, y, t, is_key);
+                touch.hold_touch_end = touch_hold_end;
                 touches.Add(touch);
                 log($"touch start: {touch.sig}, time: {t}, ({x}, {y})");
             } else {
@@ -258,12 +259,13 @@ namespace MilPlayment {
                             if (note.isHold) {
                                 note.judge_holdlastcheck = t;
                                 touch_hold_end = Math.Max(note.endTimeSec, touch_hold_end);
-                                touch.hold_touch_end = touch_hold_end;
+                            }
 
-                                foreach (var tc in touches) {
-                                    if (Math.Abs(tc.start_time - hold_lasts) < 0.3) {
-                                        tc.hold_touch_end = touch_hold_end;
-                                    }
+                            touch.hold_touch_end = touch_hold_end;
+                            
+                            foreach (var tc in touches) {
+                                if (Math.Abs(tc.start_time - hold_lasts) < 0.3) {
+                                    tc.hold_touch_end = touch_hold_end;
                                 }
                             }
 
