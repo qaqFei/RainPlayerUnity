@@ -26,6 +26,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
     public GameObject speedSlider;
     public Toggle autoplayToggle;
     public Toggle debugToggle;
+    public Toggle ChordHLToggle;
     private Button buttonSelf;
     private Button selectChartButton;
 
@@ -194,6 +195,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 gameMain.OFFSET = offsetSlider.GetComponent<Slider>().value;
                 gameMain.SPEED = speedSlider.GetComponent<Slider>().value;
                 gameMain.ISDEBUG = debugToggle.GetComponent<Toggle>().isOn;
+                gameMain.CHORDHL = ChordHLToggle.GetComponent<Toggle>().isOn;
                 hubCanvas.gameObject.SetActive(false);
 
                 setStateSetter(() => {

@@ -89,6 +89,7 @@ public class GameMain : MonoBehaviour
     public double OFFSET = 0.0;
     public double SPEED = 1.0;
     public bool ISDEBUG = false;
+    public bool CHORDHL = true;
 
     private Vector2 canvasSize;
 
@@ -326,17 +327,18 @@ public class GameMain : MonoBehaviour
                 var noteWidth = (canvasSize.x + canvasSize.y) * NOTE_SIZE * NOTE_SCALE * noteScale;
                 Texture2D noteTexture = null;
                 Texture2D[] holdTextures = null;
+                var morebets = note.isMorebets && CHORDHL;
 
-                if (note.type == (int)MilNoteType.Hit && note.isHold && note.isMorebets && note.isAlwaysPerfect) holdTextures = ntexExHoldDouble;
-                else if (note.type == (int)MilNoteType.Hit && note.isHold && note.isMorebets && !note.isAlwaysPerfect) holdTextures = ntexHoldDouble;
-                else if (note.type == (int)MilNoteType.Hit && note.isHold && !note.isMorebets && note.isAlwaysPerfect) holdTextures = ntexExHold;
-                else if (note.type == (int)MilNoteType.Hit && note.isHold && !note.isMorebets && !note.isAlwaysPerfect) holdTextures = ntexHold;
-                else if (note.type == (int)MilNoteType.Hit && !note.isHold && note.isMorebets && note.isAlwaysPerfect) noteTexture = ntexExTapDouble;
-                else if (note.type == (int)MilNoteType.Hit && !note.isHold && note.isMorebets && !note.isAlwaysPerfect) noteTexture = ntexTapDouble;
-                else if (note.type == (int)MilNoteType.Hit && !note.isHold && !note.isMorebets && note.isAlwaysPerfect) noteTexture = ntexExTap;
-                else if (note.type == (int)MilNoteType.Hit && !note.isHold && !note.isMorebets && !note.isAlwaysPerfect) noteTexture = ntexTap;
-                else if (note.type == (int)MilNoteType.Drag && note.isMorebets) noteTexture = ntexDragDouble;
-                else if (note.type == (int)MilNoteType.Drag && !note.isMorebets) noteTexture = ntexDrag;
+                if (note.type == (int)MilNoteType.Hit && note.isHold && morebets && note.isAlwaysPerfect) holdTextures = ntexExHoldDouble;
+                else if (note.type == (int)MilNoteType.Hit && note.isHold && morebets && !note.isAlwaysPerfect) holdTextures = ntexHoldDouble;
+                else if (note.type == (int)MilNoteType.Hit && note.isHold && !morebets && note.isAlwaysPerfect) holdTextures = ntexExHold;
+                else if (note.type == (int)MilNoteType.Hit && note.isHold && !morebets && !note.isAlwaysPerfect) holdTextures = ntexHold;
+                else if (note.type == (int)MilNoteType.Hit && !note.isHold && morebets && note.isAlwaysPerfect) noteTexture = ntexExTapDouble;
+                else if (note.type == (int)MilNoteType.Hit && !note.isHold && morebets && !note.isAlwaysPerfect) noteTexture = ntexTapDouble;
+                else if (note.type == (int)MilNoteType.Hit && !note.isHold && !morebets && note.isAlwaysPerfect) noteTexture = ntexExTap;
+                else if (note.type == (int)MilNoteType.Hit && !note.isHold && !morebets && !note.isAlwaysPerfect) noteTexture = ntexTap;
+                else if (note.type == (int)MilNoteType.Drag && morebets) noteTexture = ntexDragDouble;
+                else if (note.type == (int)MilNoteType.Drag && !morebets) noteTexture = ntexDrag;
                 else continue; // ??
 
                 var noteHeight = 0.0;
@@ -364,11 +366,11 @@ public class GameMain : MonoBehaviour
                     );
                 }
 
-                if (ISDEBUG) {
-                    for (var i = 0; i < notePoly.Length; i++) {
-                        notePoly[i] += canvasSize / 2;
-                    }
+                for (var i = 0; i < notePoly.Length; i++) {
+                    notePoly[i] += canvasSize / 2;
+                }
 
+                if (ISDEBUG) {
                     if (note.notePolyDisplayPrefab == null) {
                         note.notePolyDisplayPrefab = new GameObject[] {
                             Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),

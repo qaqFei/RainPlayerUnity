@@ -17,7 +17,8 @@
         "StartPlay-LoadingChart": "Loading Chart...",
         "StartPlay-ChartLoaded": "Chart Loaded",
         "StartPlay-Error": "Error",
-        "Debug": "Debug"
+        "Debug": "Debug",
+        "ChordHighlighted": "Chord highlighted"
     },
     "zh": {
         "__LangName": "简体中文",
@@ -37,6 +38,7 @@
         "StartPlay-LoadingChart": "加载谱面...",
         "StartPlay-ChartLoaded": "加载完成",
         "StartPlay-Error": "错误",
-        "Debug": "调试"
+        "Debug": "调试",
+        "ChordHighlighted": "多押提示"
     }
 }
