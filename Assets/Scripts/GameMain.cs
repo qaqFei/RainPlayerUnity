@@ -88,6 +88,7 @@ public class GameMain : MonoBehaviour
     public bool AUTOPLAY = false;
     public double OFFSET = 0.0;
     public double SPEED = 1.0;
+    public bool ISDEBUG = false;
 
     private Vector2 canvasSize;
 
@@ -304,11 +305,13 @@ public class GameMain : MonoBehaviour
                         else line.notePool.Release(note.notePrefab);
                         note.notePrefab = null;
 
-                        // foreach (var notePolyDisplay in note.notePolyDisplayPrefab) {
-                        //     UnityEngine.Object.Destroy(notePolyDisplay);
-                        // }
+                        if (ISDEBUG && note.notePolyDisplayPrefab != null) {
+                            foreach (var notePolyDisplay in note.notePolyDisplayPrefab) {
+                                UnityEngine.Object.Destroy(notePolyDisplay);
+                            }
 
-                        // note.notePolyDisplayPrefab = null;
+                            note.notePolyDisplayPrefab = null;
+                        }
                     }
 
                     continue;
@@ -349,7 +352,7 @@ public class GameMain : MonoBehaviour
                         (double)noteCenter.x,
                         (double)noteCenter.y + holdLength / 2,
                         noteWidth * note.realScale,
-                        noteHeight * note.realScale
+                        noteHeight * note.realScale / MilConst.MilConst.NOTE_SIZE_SCALE
                     );
                 } else {
                     noteHeight = noteWidth / noteTexture.width * noteTexture.height;
@@ -361,23 +364,25 @@ public class GameMain : MonoBehaviour
                     );
                 }
 
-                for (var i = 0; i < notePoly.Length; i++) {
-                    notePoly[i] += canvasSize / 2;
+                if (ISDEBUG) {
+                    for (var i = 0; i < notePoly.Length; i++) {
+                        notePoly[i] += canvasSize / 2;
+                    }
+
+                    if (note.notePolyDisplayPrefab == null) {
+                        note.notePolyDisplayPrefab = new GameObject[] {
+                            Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
+                            Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
+                            Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
+                            Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
+                        };
+                    }
+
+                    note.notePolyDisplayPrefab[0].transform.localPosition = notePoly[0] - canvasSize / 2;
+                    note.notePolyDisplayPrefab[1].transform.localPosition = notePoly[1] - canvasSize / 2;
+                    note.notePolyDisplayPrefab[2].transform.localPosition = notePoly[2] - canvasSize / 2;
+                    note.notePolyDisplayPrefab[3].transform.localPosition = notePoly[3] - canvasSize / 2;
                 }
-
-                // if (note.notePolyDisplayPrefab == null) {
-                //     note.notePolyDisplayPrefab = new GameObject[] {
-                //         Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
-                //         Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
-                //         Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
-                //         Instantiate(notePolyDisplayPrefab, gameCanvas.gameObject.transform),
-                //     };
-                // }
-
-                // note.notePolyDisplayPrefab[0].transform.localPosition = notePoly[0] - canvasSize / 2;
-                // note.notePolyDisplayPrefab[1].transform.localPosition = notePoly[1] - canvasSize / 2;
-                // note.notePolyDisplayPrefab[2].transform.localPosition = notePoly[2] - canvasSize / 2;
-                // note.notePolyDisplayPrefab[3].transform.localPosition = notePoly[3] - canvasSize / 2;
 
                 if (note.notePrefab != null || MathUtils.polygonInScreen(canvasSize.x, canvasSize.y, notePoly)) {
                     if (note.notePrefab == null) {
@@ -523,7 +528,7 @@ public class GameMain : MonoBehaviour
         GameUI.transform.Find("Progressbar").gameObject.GetComponent<RectTransform>().localScale = new Vector2((float)(progress * canvasSize.x), 1);
         var music_ended = music_position + 1e-2 >= music_length;
 
-        if ((chart.comboTimes.Count != 0 && t > 5.0 + 0.5) || music_ended) {
+        if ((chart.comboTimes.Count != 0 && t > chart.comboTimes[chart.comboTimes.Count - 1] + 0.5) || music_ended) {
             isPlaying = false;
             if (!music_ended) {
                 StartCoroutine(libSasa.fadeout_music(sasaMusic, 0.75));
@@ -661,6 +666,13 @@ public class GameMain : MonoBehaviour
             ResUtils.DestroyGameObjectPool(line.goodHoldHitParticlePool);
             Destroy(line.linePrefab);
             line.linePrefab = null;
+
+            foreach (var note in line.notes) {
+                if (note.notePolyDisplayPrefab != null) {
+                    foreach (var i in note.notePolyDisplayPrefab) Destroy(i);
+                    note.notePolyDisplayPrefab = null;
+                }
+            }
         }
 
         foreach (var sb in chart.storyboards) {

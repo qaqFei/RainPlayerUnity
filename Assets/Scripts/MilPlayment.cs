@@ -161,13 +161,13 @@ namespace MilPlayment {
                 linePos.x + lineRelativePos.x,
                 linePos.y + lineRelativePos.y
             );
-            var lineSize = line.animationCollection.GetValue((int)MilAnimationType.Size) * MilConst.MilConst.NOTE_SIZE_SCALE;
+            var lineSize = line.animationCollection.GetValue((int)MilAnimationType.Size);
             var lineRotation = line.animationCollection.GetValue((int)MilAnimationType.Rotation);
             var noteScale = note.animationCollection.GetValue((int)MilAnimationType.Size);
             var noteRotation = note.animationCollection.GetValue((int)MilAnimationType.Rotation);
 
             var notePos = note.GetPosition(t, 0.0, ToScreenX, ToScreenY);
-            var transform = note.GetCanvasTransform(lineCenter, lineRotation, lineSize / MilConst.MilConst.NOTE_SIZE_SCALE, noteScale, noteRotation);
+            var transform = note.GetCanvasTransform(lineCenter, lineRotation, lineSize, noteScale, noteRotation);
             var touchPoint = transform.getInverse().getPoint((double)touch.x, (double)touch.y);
 
             return (

@@ -16,7 +16,8 @@
         "StartPlay-FileNotFound": "File not found",
         "StartPlay-LoadingChart": "Loading Chart...",
         "StartPlay-ChartLoaded": "Chart Loaded",
-        "StartPlay-Error": "Error"
+        "StartPlay-Error": "Error",
+        "Debug": "Debug"
     },
     "zh": {
         "__LangName": "简体中文",
@@ -35,6 +36,7 @@
         "StartPlay-FileNotFound": "文件不存在",
         "StartPlay-LoadingChart": "加载谱面...",
         "StartPlay-ChartLoaded": "加载完成",
-        "StartPlay-Error": "错误"
+        "StartPlay-Error": "错误",
+        "Debug": "调试"
     }
 }
