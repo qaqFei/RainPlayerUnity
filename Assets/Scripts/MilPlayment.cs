@@ -123,8 +123,15 @@ namespace MilPlayment {
             log("combo reset to 0");
         }
 
-        private Touch _get_touch(int sig) {
+        public Touch get_touch(int sig) {
             return touches.Find(t => t.sig == sig);
+        }
+
+        public Vector2 touch_position_to_canvas(Touch touch, Vector2 canvasSize) {
+            return new Vector2(
+                (float)((double)touch.x / w * canvasSize.x),
+                (float)(-(double)touch.y / h * canvasSize.y)
+            );
         }
 
         public int[] get_all_sigs() {
@@ -225,7 +232,7 @@ namespace MilPlayment {
         public void touchstart(double t, int sig, int x, int y, bool is_key = false) {
             if (autoplay) return;
             x -= w / 2; y = h / 2 - y;
-            var touch = _get_touch(sig);
+            var touch = get_touch(sig);
 
             if (touch == null) {
                 touch = new Touch(sig, x, y, t, is_key);
@@ -315,7 +322,7 @@ namespace MilPlayment {
         public void touchmove(double t, int sig, int x, int y) {
             if (autoplay) return;
             x -= w / 2; y = h / 2 - y;
-            var touch = _get_touch(sig);
+            var touch = get_touch(sig);
 
             if (touch != null) {
                 touch.x = x;
@@ -331,7 +338,7 @@ namespace MilPlayment {
         public void touchend(double t, int sig, int x, int y) {
             if (autoplay) return;
             x -= w / 2; y = h / 2 - y;
-            var touch = _get_touch(sig);
+            var touch = get_touch(sig);
 
             if (touch != null) {
                 touches.Remove(touch);

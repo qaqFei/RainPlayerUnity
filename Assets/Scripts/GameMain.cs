@@ -40,9 +40,11 @@ public class GameMain : MonoBehaviour
     public GameObject goodHoldHitParticlePrefab;
     public GameObject notePolyDisplayPrefab;
     public GameObject EarlyLateBallPrefab;
+    public GameObject TouchPointPrefab;
     public GameObject hitParticlesContainer;
     public GameObject hitCircPrefab;
     public GameObject hitCircsContainer;
+    public GameObject TouchPointContainer;
     public GameObject GameUI;
     public GameObject PauseUI;
     public GameObject ResultUIRaw;
@@ -61,6 +63,7 @@ public class GameMain : MonoBehaviour
     private double lastupdate_playment_time;
     private double t;
     private GameObject ResultUI;
+    private Dictionary<int, GameObject> touchPointDisplays;
 
     public Texture2D ntexTap;
     public Texture2D ntexExTap;
@@ -93,6 +96,7 @@ public class GameMain : MonoBehaviour
     public bool CHORDHL = true;
     public bool ELINDICATOR = false;
     public string COMBOTEXT = "";
+    public bool SHOWTOUCHPOINT = false;
 
     private Vector2 canvasSize;
     private float ComboRawScale;
@@ -161,6 +165,33 @@ public class GameMain : MonoBehaviour
         return RectTransformUtility.WorldToScreenPoint(mainCamera, LinePrefabRPToWorld(rp));
     }
 
+    void UpdateTouchPoints() {
+        if (!SHOWTOUCHPOINT) return;
+        var playment_sigs = chart.playment.get_all_sigs();
+        var touch_point_display_sigs = touchPointDisplays.Keys;
+        var merged_sigs = playment_sigs.Union(touch_point_display_sigs).ToList();
+
+        foreach (var sig in merged_sigs) {
+            if (sig < 1000) continue; // keyboard
+
+            if (!playment_sigs.Contains(sig)) {
+                Destroy(touchPointDisplays[sig]);
+                touchPointDisplays.Remove(sig);
+            } else if (!touch_point_display_sigs.Contains(sig)) {
+                var ins = Instantiate(TouchPointPrefab, TouchPointContainer.transform);
+                var touch = chart.playment.get_touch(sig);
+                if (touch == null) continue; // ??
+                ins.transform.localPosition = chart.playment.touch_position_to_canvas(touch, canvasSize);
+                touchPointDisplays[sig] = ins;
+            } else {
+                var ins = touchPointDisplays[sig];
+                var touch = chart.playment.get_touch(sig);
+                if (touch == null) continue; // ??
+                ins.transform.localPosition = chart.playment.touch_position_to_canvas(touch, canvasSize);
+            }
+        }
+    }
+
     void Update() {
         UpdateCanvasSize();
         UpdateInputSystem();
@@ -195,8 +226,6 @@ public class GameMain : MonoBehaviour
                 unity_sigs[sig] = touch.position.ReadValue();
             }
 
-            Debug.Log(unity_sigs);
-
             foreach (var sig in unity_sigs.Keys.Union(playment_sigs)) {
                 if (sig < 2000) continue; // other input type
                 if (!unity_sigs.ContainsKey(sig)) chart.playment.touchend(t, sig, 0, 0);
@@ -204,6 +233,8 @@ public class GameMain : MonoBehaviour
                 else chart.playment.touchmove(t, sig, (int)unity_sigs[sig].x, (int)unity_sigs[sig].y);
             }
         }
+
+        UpdateTouchPoints();
 
         while (lastupdate_playment_time + 1.0 / PLATMENT_UPDATE_FPS < t) {
             chart.playment.update(lastupdate_playment_time);
@@ -628,6 +659,7 @@ public class GameMain : MonoBehaviour
         }
 
         hitCircInstances = new HashSet<HitCircInsWapper>();
+        touchPointDisplays = new Dictionary<int, GameObject>();
         PauseUI.SetActive(false);
         GameUI.transform.Find("Pause").gameObject.GetComponent<PauseButton>().Callback = new Action(() => {
             userPause();
@@ -706,6 +738,11 @@ public class GameMain : MonoBehaviour
         var elballs = new List<Transform>(elc_transform.childCount);
         foreach (Transform t in elc_transform) elballs.Add(t);
         elballs.ForEach(c => Destroy(c.gameObject));
+
+        foreach (var k in touchPointDisplays.Keys) {
+            Destroy(touchPointDisplays[k]);
+        }
+        touchPointDisplays.Clear();
     }
 
     public void BackToHub() {
