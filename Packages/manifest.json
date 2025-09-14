@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.eastafiev.csfb": "https://github.com/eastafiev/CompactStandaloneFileBrowser.git?path=Assets/StandaloneFileBrowser",
     "com.unity.collab-proxy": "2.9.2",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.ide.rider": "3.0.31",
@@ -13,7 +14,6 @@
     "com.unity.ugui": "2.0.0",
     "com.unity.visualscripting": "1.9.5",
     "com.yasirkula.nativefilepicker": "https://github.com/yasirkula/UnityNativeFilePicker.git",
-    "io.github.gkngkc.unity-standalone-file-browser": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
     "com.unity.modules.accessibility": "1.0.0",
     "com.unity.modules.ai": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",

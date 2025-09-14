@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.eastafiev.csfb": {
+      "version": "https://github.com/eastafiev/CompactStandaloneFileBrowser.git?path=Assets/StandaloneFileBrowser",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "cfef7f91dfdd35fecc6ec122f71e3dbd7e2ec803"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
@@ -316,13 +323,6 @@
       "source": "git",
       "dependencies": {},
       "hash": "de7bbba0dbbdde9a87f0be0c504fc8ed81426a7f"
-    },
-    "io.github.gkngkc.unity-standalone-file-browser": {
-      "version": "https://github.com/shiena/UnityStandaloneFileBrowser.git?path=Packages/StandaloneFileBrowser#upm",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "858b43cc945cdcb33c45a6ee473b5ed0da1b1f6a"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",

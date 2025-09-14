@@ -4,8 +4,53 @@ using System;
 
 using MilConst;
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
-    using SFB;
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+    using NativeFileBrowser;
+#endif
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+using System.IO;
+using System.Collections;
+using UnityEngine.Networking;
+using System.Runtime.InteropServices;
+
+public class WebGLFilePicker : MonoBehaviour
+{
+    [DllImport("__Internal")]
+    private static extern void FreeBlobURL(string url);
+    [DllImport("__Internal")]
+    private static extern void PickZipFile(string go, string cb);
+    private Action<string> onRealPath;
+
+    public static void PickFileAndCache(Action<string> onRealPath) {
+        var go = new GameObject("WebGLFilePickerTemp");
+        var picker = go.AddComponent<WebGLFilePicker>();
+        picker.onRealPath = onRealPath;
+        PickZipFile(go.name, "OnBlobPicked");
+    }
+
+    private void OnBlobPicked(string blobUrl) {
+        StartCoroutine(DownloadAndCache(blobUrl));
+    }
+
+    private IEnumerator DownloadAndCache(string blobUrl) {
+        using (var uwr = UnityWebRequest.Get(blobUrl)) {
+            yield return uwr.SendWebRequest();
+            if (uwr.result != UnityWebRequest.Result.Success) {
+                Debug.LogError($"WebGL download failed: {uwr.error}");
+                onRealPath?.Invoke(null);
+            }
+            else {
+                byte[] data = uwr.downloadHandler.data;
+                string tmpPath = Path.Combine(Application.temporaryCachePath, $"{Guid.NewGuid().ToString("N")}.zip");
+                File.WriteAllBytes(tmpPath, data);
+                FreeBlobURL(blobUrl);
+                onRealPath?.Invoke(tmpPath);
+            }
+        }
+        Destroy(gameObject);
+    }
+}
 #endif
 
 public class SelectChartButton : MonoBehaviour, I18nSupported
@@ -58,19 +103,24 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
     public void ButtonOnClick() {
         Debug.Log("Select chart button clicked");
 
-        #if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
+        #if UNITY_EDITOR || UNITY_STANDALONE_WIN
             var title = "Select milthm chart file";
             var extensions = new[] {
                 new ExtensionFilter("Milthm Chart File", "zip"),
                 new ExtensionFilter("All Files", "*")
             };
 
-            var path = StandaloneFileBrowser.OpenFilePanel(title, "", extensions, false);
+            var path = StandaloneFileBrowser.OpenFilePanel(title, extensions, false);
 
             if (path == null || path.Length == 0) return;
 
             selectedPath = path[0];
             SelectEnd();
+        #elif UNITY_WEBGL
+            WebGLFilePicker.PickFileAndCache((res) => {
+                selectedPath = res;
+                SelectEnd();
+            });
         #else
             if (NativeFilePicker.IsFilePickerBusy()) {
                 Debug.LogWarning("File picker is busy");
