@@ -4,8 +4,8 @@ using System;
 
 using MilConst;
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
-    using NativeFileBrowser;
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
+    using SFB;
 #endif
 
 public class SelectChartButton : MonoBehaviour, I18nSupported
@@ -58,14 +58,14 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
     public void ButtonOnClick() {
         Debug.Log("Select chart button clicked");
 
-        #if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        #if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBGL
             var title = "Select milthm chart file";
             var extensions = new[] {
                 new ExtensionFilter("Milthm Chart File", "zip"),
-                new ExtensionFilter("All Files", "*.*")
+                new ExtensionFilter("All Files", "*")
             };
 
-            var path = StandaloneFileBrowser.OpenFilePanel(title, extensions, false);
+            var path = StandaloneFileBrowser.OpenFilePanel(title, "", extensions, false);
 
             if (path == null || path.Length == 0) return;
 
