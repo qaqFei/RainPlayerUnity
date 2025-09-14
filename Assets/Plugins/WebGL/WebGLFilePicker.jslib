@@ -12,8 +12,8 @@ mergeInto(LibraryManager.library, {
 
         input.onchange = null;
 
-        input.onchange = function  ()  {
-            if  (input.files.length  >  0)  {
+        input.onchange = function () {
+            if (input.files.length > 0) {
                 const file = input.files[0];
                 const url = URL.createObjectURL(file);
                 SendMessage(Pointer_stringify(gameObjectName), Pointer_stringify(methodName), url);
