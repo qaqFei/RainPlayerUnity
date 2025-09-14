@@ -459,11 +459,21 @@ namespace MilDataStructs {
                 var sColor = ColorUtils.ToRGBA((uint)start);
                 var eColor = ColorUtils.ToRGBA((uint)end);
 
-                var r = sColor[0] + ((eColor[0] - sColor[0]) * p);
-                var g = sColor[1] + ((eColor[1] - sColor[1]) * p);
-                var b = sColor[2] + ((eColor[2] - sColor[2]) * p);
-                var a = sColor[3] + ((eColor[3] - sColor[3]) * p);
-                return (double)ColorUtils.ToUint(new double[] { r, g, b, a });
+                if (!MilConst.MilConst.EnableOklchInterplate) {
+                    var r = sColor[0] + ((eColor[0] - sColor[0]) * p);
+                    var g = sColor[1] + ((eColor[1] - sColor[1]) * p);
+                    var b = sColor[2] + ((eColor[2] - sColor[2]) * p);
+                    var a = sColor[3] + ((eColor[3] - sColor[3]) * p);
+                    return (double)ColorUtils.ToUint(new double[] { r, g, b, a });
+                } else {
+                    var sOklch = ColorUtils.RGBAToOklch(sColor);
+                    var eOklch = ColorUtils.RGBAToOklch(eColor);
+                    var a = sColor[0] + ((eColor[0] - sColor[0]) * p);
+                    var b = sOklch[1] + ((eOklch[1] - sOklch[1]) * p);
+                    var c = sOklch[2] + ((eOklch[2] - sOklch[2]) * p);
+                    var d = sOklch[3] + ((eOklch[3] - sOklch[3]) * p);
+                    return (double)ColorUtils.ToUint(ColorUtils.OklchToRGBA(new double[] { a, b, c, d }));
+                }
             }
         }
     }

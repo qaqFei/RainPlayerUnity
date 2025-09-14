@@ -31,6 +31,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
     public Toggle ChordHLToggle;
     public Toggle ELIndicatorToggle;
     public Toggle ShowTouchPointToggle;
+    public Toggle OklchColorInterplateToggle;
     public InputField comboTextInputField;
     private Button buttonSelf;
     private Button selectChartButton;
@@ -206,6 +207,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 gameMain.SHOWTOUCHPOINT = ShowTouchPointToggle.GetComponent<Toggle>().isOn;
                 gameMain.MUSICVOL = musicVolSlider.GetComponent<Slider>().value;
                 gameMain.HITSOUNDVOL = hitsoundVolSlider.GetComponent<Slider>().value;
+                MilConst.MilConst.EnableOklchInterplate = OklchColorInterplateToggle.GetComponent<Toggle>().isOn;
                 hubCanvas.gameObject.SetActive(false);
 
                 setStateSetter(() => {

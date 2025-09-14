@@ -150,11 +150,78 @@ namespace Utils {
 
     public class ColorUtils {
         public static double[] ToRGBA(uint color) {
-            return new double[] { (double)((color >> 24) & 0xFF) / 255f, (double)((color >> 16) & 0xFF) / 255f, (double)((color >> 8) & 0xFF) / 255f, (double)(color & 0xFF) / 255f };
+            return new double[] { (double)((color >> 24) & 0xFF) / 255.0, (double)((color >> 16) & 0xFF) / 255.0, (double)((color >> 8) & 0xFF) / 255.0, (double)(color & 0xFF) / 255.0 };
         }
 
         public static uint ToUint(double[] rgba) {
-            return (uint)(rgba[0] * 255f) << 24 | (uint)(rgba[1] * 255f) << 16 | (uint)(rgba[2] * 255f) << 8 | (uint)(rgba[3] * 255f);
+            return (uint)(rgba[0] * 255.0) << 24 | (uint)(rgba[1] * 255.0) << 16 | (uint)(rgba[2] * 255.0) << 8 | (uint)(rgba[3] * 255.0);
+        }
+
+        public static double[] RGBAToOklch(double[] rgba) {
+            double r = rgba[0];
+            double g = rgba[1];
+            double b = rgba[2];
+            double a = rgba[3];
+
+            r = r <= 0.04045 ? r / 12.92 : Math.Pow((r + 0.055) / 1.055, 2.4);
+            g = g <= 0.04045 ? g / 12.92 : Math.Pow((g + 0.055) / 1.055, 2.4);
+            b = b <= 0.04045 ? b / 12.92 : Math.Pow((b + 0.055) / 1.055, 2.4);
+
+            double l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+            double m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+            double s = 0.0883024619 * r + 0.2817188376 * g + 0.6309787005 * b;
+
+            l = Math.Cbrt(l);
+            m = Math.Cbrt(m);
+            s = Math.Cbrt(s);
+
+            double lab_l = 0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s;
+            double lab_a = 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s;
+            double lab_b = 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s;
+
+            double ok_l = Math.Clamp(lab_l, 0, 1);
+            double ok_c = Math.Sqrt(lab_a * lab_a + lab_b * lab_b);
+            double ok_h = Math.Atan2(lab_b, lab_a) * (180.0 / Math.PI);
+            while (ok_h < 0) ok_h += 360.0;
+
+            return new double[4] {
+                ok_l,
+                Math.Clamp(ok_c, 0, 0.4),
+                ok_h / 360.0,
+                a
+            };
+        }
+
+        public static double[] OklchToRGBA(double[] oklch) {
+            double l = oklch[0];
+            double c = oklch[1];
+            double h = oklch[2] * 360.0;
+            double a = oklch[3];
+
+            double lab_a = c * Math.Cos(h * (Math.PI / 180.0));
+            double lab_b = c * Math.Sin(h * (Math.PI / 180.0));
+
+            double l_ = l + 0.3963377774 * lab_a + 0.2158037573 * lab_b;
+            double m_ = l - 0.1055613458 * lab_a - 0.0638541728 * lab_b;
+            double s_ = l - 0.0894841775 * lab_a - 1.2914855480 * lab_b;
+
+            l = l_ * l_ * l_;
+            double m = m_ * m_ * m_;
+            double s = s_ * s_ * s_;
+
+            double r =  4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+            double g = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+            double b = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+
+            r = r <= 0.0031308 ? 12.92 * r : 1.055 * Math.Pow(r, 1.0 / 2.4) - 0.055;
+            g = g <= 0.0031308 ? 12.92 * g : 1.055 * Math.Pow(g, 1.0 / 2.4) - 0.055;
+            b = b <= 0.0031308 ? 12.92 * b : 1.055 * Math.Pow(b, 1.0 / 2.4) - 0.055;
+
+            r = Math.Clamp(r, 0, 1);
+            g = Math.Clamp(g, 0, 1);
+            b = Math.Clamp(b, 0, 1);
+
+            return new double[4] { r, g, b, a };
         }
 
         // fuck in other places
