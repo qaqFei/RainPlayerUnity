@@ -24,6 +24,8 @@ public class StartPlay : MonoBehaviour, I18nSupported
     public GameObject noteSizeSlider;
     public GameObject offsetSlider;
     public GameObject speedSlider;
+    public GameObject musicVolSlider;
+    public GameObject hitsoundVolSlider;
     public Toggle autoplayToggle;
     public Toggle debugToggle;
     public Toggle ChordHLToggle;
@@ -202,6 +204,8 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 gameMain.ELINDICATOR = ELIndicatorToggle.GetComponent<Toggle>().isOn;
                 gameMain.COMBOTEXT = comboTextInputField.GetComponent<InputField>().text;
                 gameMain.SHOWTOUCHPOINT = ShowTouchPointToggle.GetComponent<Toggle>().isOn;
+                gameMain.MUSICVOL = musicVolSlider.GetComponent<Slider>().value;
+                gameMain.HITSOUNDVOL = hitsoundVolSlider.GetComponent<Slider>().value;
                 hubCanvas.gameObject.SetActive(false);
 
                 setStateSetter(() => {

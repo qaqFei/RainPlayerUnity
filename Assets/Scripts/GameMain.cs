@@ -97,6 +97,8 @@ public class GameMain : MonoBehaviour
     public bool ELINDICATOR = false;
     public string COMBOTEXT = "";
     public bool SHOWTOUCHPOINT = false;
+    public double MUSICVOL = 1.0;
+    public double HITSOUNDVOL = 1.0;
 
     private Vector2 canvasSize;
     private float ComboRawScale;
@@ -281,8 +283,8 @@ public class GameMain : MonoBehaviour
                     note.clicked = true;
 
                     if (!note.isFake) {
-                        if (note.type == (int)MilNoteType.Hit) libSasa.play_sfx(sasaHitSfx, (float)1.0);
-                        else libSasa.play_sfx(sasaDragSfx, (float)1.0);
+                        if (note.type == (int)MilNoteType.Hit) libSasa.play_sfx(sasaHitSfx, (float)HITSOUNDVOL);
+                        else libSasa.play_sfx(sasaDragSfx, (float)HITSOUNDVOL);
                     }
                 }
 
@@ -667,7 +669,7 @@ public class GameMain : MonoBehaviour
         
         if (!isRetry || true) loadSasaPlayIns(); // seek 之后 position 不会立刻变为 0, 所以这里重新加载
         libSasa.seek_music(sasaMusic, 0.0);
-        libSasa.play_music(sasaMusic, (float)1.0);
+        libSasa.play_music(sasaMusic, (float)MUSICVOL);
         isPlaying = true;
     }
 
@@ -691,7 +693,7 @@ public class GameMain : MonoBehaviour
 
     void OnApplicationFocus(bool pauseStatus) {
         if (isPlaying && musicPaused && !userPaused) {
-            libSasa.play_music(sasaMusic, (float)1.0);
+            libSasa.play_music(sasaMusic, (float)MUSICVOL);
             musicPaused = false;
         }
     }
@@ -800,7 +802,7 @@ public class GameMain : MonoBehaviour
         btnContainer.SetActive(true);
         userPaused = false;
         musicPaused = false;
-        libSasa.play_music(sasaMusic, (float)1.0);
+        libSasa.play_music(sasaMusic, (float)MUSICVOL);
     }
 
     private void BeforeEndplayAnimation() {
