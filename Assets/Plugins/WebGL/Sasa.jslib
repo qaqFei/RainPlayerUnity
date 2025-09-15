@@ -1,5 +1,5 @@
 mergeInto(LibraryManager.library, (() => {
-    const actx = new AudioContext();
+    let actx = null;
     let ptrbase = 0xff;
     const newPtr = () => ptrbase++;
 
@@ -9,7 +9,13 @@ mergeInto(LibraryManager.library, (() => {
     const audioMusics = {};
 
     return {
+        initialize: function () {
+            actx = new AudioContext();
+        },
+
         create_audio_manager: function () {
+            if (!actx) this.initialize();
+            
             const ptr = newPtr();
             audioManagers[ptr] = {
                 sfxs: [],
@@ -19,6 +25,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         load_audio_clip_from_memory: function (dataPtr, dataLen) {
+            if (!actx) this.initialize();
+            
             const data = HEAPU8.slice(dataPtr, dataPtr + dataLen);
             const ptr = newPtr();
             const clip = new Audio();
@@ -34,6 +42,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         create_sfx: function (manager_ptr, clip_ptr) {
+            if (!actx) this.initialize();
+            
             const clip = audioClips[clip_ptr];
             const manager = audioManagers[manager_ptr];
 
@@ -52,6 +62,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         create_music: function (manager_ptr, clip_ptr) {
+            if (!actx) this.initialize();
+            
             const clip = audioClips[clip_ptr];
             const manager = audioManagers[manager_ptr];
 
@@ -72,6 +84,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         play_sfx: function (sfx_ptr, volume) {
+            if (!actx) this.initialize();
+            
             const sfx = audioSfxs[sfx_ptr];
             if (!sfx) return;
             const clip = audioClips[sfx.clip_ptr];
@@ -95,6 +109,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         play_music: function (music_ptr, volume) {
+            if (!actx) this.initialize();
+            
             const music = audioMusics[music_ptr];
             if (!music) return;
             const clip = audioClips[music.clip_ptr];
@@ -119,6 +135,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         pause_music: function (music_ptr) {
+            if (!actx) this.initialize();
+            
             const music = audioMusics[music_ptr];
             if (!music) return;
             const ins = music.instance;
@@ -132,6 +150,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         is_music_paused: function (music_ptr) {
+            if (!actx) this.initialize();
+            
             const music = audioMusics[music_ptr];
             if (!music) return false;
             const ins = music.instance;
@@ -148,6 +168,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         set_music_volume: function (music_ptr, volume) {
+            if (!actx) this.initialize();
+            
             const music = audioMusics[music_ptr];
             if (!music) return;
             const ins = music.instance;
@@ -160,6 +182,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         get_music_position: function (music_ptr) {
+            if (!actx) this.initialize();
+            
             const music = audioMusics[music_ptr];
             if (!music) return 0;
             const ins = music.instance;
@@ -172,6 +196,8 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         get_audio_clip_duration: function (clip_ptr) {
+            if (!actx) this.initialize();
+            
             const clip = audioClips[clip_ptr];
             if (!clip) return 0;
 

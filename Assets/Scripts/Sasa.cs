@@ -33,6 +33,7 @@ namespace Sasa {
             [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
         #else
             [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip_from_memory(byte[] data);
+            [DllImport(DLL_NAME)] public static extern void initialize(); // auto called by javascript
 
             public static IntPtr load_audio_clip(string path) {
                 try {
