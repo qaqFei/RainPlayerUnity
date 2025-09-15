@@ -16,7 +16,7 @@ mergeInto(LibraryManager.library, {
             if (input.files.length > 0) {
                 const file = input.files[0];
                 const url = URL.createObjectURL(file);
-                SendMessage(Pointer_stringify(gameObjectName), Pointer_stringify(methodName), url);
+                SendMessage("WebGLFilePickerTemp", "OnBlobPicked", url);
             }
         };
 
@@ -24,6 +24,6 @@ mergeInto(LibraryManager.library, {
     },
 
     FreeBlobURL: function (url) {
-        URL.revokeObjectURL(Pointer_stringify(url));
+        // URL.revokeObjectURL(UTF16ToString(url));
     }
 });

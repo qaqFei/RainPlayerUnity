@@ -23,7 +23,7 @@ public class WebGLFilePicker : MonoBehaviour
     private Action<string> onRealPath;
 
     public static void PickFileAndCache(Action<string> onRealPath) {
-        var go = new GameObject("WebGLFilePickerTemp");
+        var go = new GameObject("WebGLFilePickerTemp"); // 如果这里的两个名字改了, jslib 的也要改
         var picker = go.AddComponent<WebGLFilePicker>();
         picker.onRealPath = onRealPath;
         PickZipFile(go.name, "OnBlobPicked");

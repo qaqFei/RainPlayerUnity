@@ -5,7 +5,12 @@ using UnityEngine;
 
 namespace Sasa {
     internal class _libSasa {
-        private const string DLL_NAME = "sasa";
+        private const string DLL_NAME = 
+        #if !UNITY_WEBGL
+            "sasa";
+        #else
+            "__Internal";
+        #endif
 
         [DllImport(DLL_NAME)] public static extern bool play_sfx(IntPtr sfx_ptr, float volume);
         [DllImport(DLL_NAME)] public static extern bool play_music(IntPtr music_ptr, float volume);
@@ -21,9 +26,28 @@ namespace Sasa {
         [DllImport(DLL_NAME)] public static extern void destroy_music(IntPtr music_ptr);
         [DllImport(DLL_NAME)] public static extern IntPtr create_audio_manager();
         [DllImport(DLL_NAME)] public static extern bool recover_if_needed(IntPtr manager_ptr);
-        [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
         [DllImport(DLL_NAME)] public static extern IntPtr create_sfx(IntPtr manager_ptr, IntPtr clip_ptr);
         [DllImport(DLL_NAME)] public static extern IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr, double playback_rate);
+
+        #if !UNITY_WEBGL
+            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
+        #else
+            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip_from_memory(byte[] data);
+
+            public static IntPtr load_audio_clip(string path) {
+                try {
+                    using (var file = System.IO.File.OpenRead(path)) {
+                        var buffer = new byte[file.Length];
+                        file.Read(buffer, 0, buffer.Length);
+                        return load_audio_clip_from_memory(buffer);
+                    }
+                }
+                catch (Exception e) {
+                    Debug.LogException(e);
+                    return IntPtr.Zero;
+                }
+            }
+        #endif
     }
 
     public class libSasa {

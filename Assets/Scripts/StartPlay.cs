@@ -42,6 +42,7 @@ public class StartPlay : MonoBehaviour, I18nSupported
     private ChartMeta meta;
     private MilChart chart;
     private IntPtr sasaAudioClip;
+    private string selectedPath;
 
     private Action stateSetter;
 
@@ -79,11 +80,11 @@ public class StartPlay : MonoBehaviour, I18nSupported
         if (selectChartButton != null) selectChartButton.interactable = true;
     }
 
-    public async void ButtonOnClick() {
+    public void ButtonOnClick() {
         Debug.Log("Start play button clicked");
         if (chartSelector == null) return;
 
-        var selectedPath = chartSelector.selectedPath;
+        selectedPath = chartSelector.selectedPath;
         if (selectedPath == null) {
             setStateSetter(() => {
                 stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-NoChartSelected");
@@ -104,72 +105,75 @@ public class StartPlay : MonoBehaviour, I18nSupported
         });
         disableButton();
 
+        StartCoroutine(ChartLoader());
+    }
+
+    private System.Collections.IEnumerator ChartLoader() {
+        yield return null;
+
+        Exception err = null;
+
         try {
-            Exception err = await Task.Run<Exception>(() => {
-                try {
-                    using (ZipArchive chartArchive = ZipFile.OpenRead(selectedPath)) {
-                        Debug.Log("Opened chart archive");
-
-                        var metaEntry = ZipUtils.GetEntry(chartArchive, "meta.json");
-                        if (metaEntry == null) throw new Exception("meta.json not found in chart archive");
-
-                        using (var metaStream = metaEntry.Open())
-                        using (var metaReader = new StreamReader(metaStream)) {
-                            string metaJsonContent = metaReader.ReadToEnd();
-                            meta = JsonUtility.FromJson<ChartMeta>(metaJsonContent);
-                            Debug.Log($"Chart metadata: {metaJsonContent}");
-                        }
-
-                        var chartEntry = ZipUtils.GetEntry(chartArchive, meta.chart_file);
-                        var audioEntry = ZipUtils.GetEntry(chartArchive, meta.audio_file);
-                        var imageEntry = ZipUtils.GetEntry(chartArchive, meta.image_file);
-
-                        if (chartEntry == null) throw new Exception("Chart file not found in chart archive");
-                        if (audioEntry == null) throw new Exception("Audio file not found in chart archive");
-                        if (imageEntry == null) throw new Exception("Image file not found in chart archive");
-
-                        using (var chartStream = chartEntry.Open())
-                        using (var chartReader = new StreamReader(chartStream)) {
-                            string chartJsonContent = chartReader.ReadToEnd();
-                            chart = JsonUtility.FromJson<MilChart>(chartJsonContent);
-                        }
-
-                        using (var imageStream = imageEntry.Open()) {
-                            chartImageBytes = ResUtils.ReadAllBytes(imageStream);
-                            Debug.Log($"Loaded image data: {chartImageBytes.Length} bytes");
-                        }
-
-                        using (var audioStream = audioEntry.Open()) {
-                            sasaAudioClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(ResUtils.ReadAllBytes(audioStream)));
-                            Debug.Log($"Loaded sasa audio clip: {sasaAudioClip}");
-                        }
-
-                        foreach (var sb in chart.storyboards) {
-                            if (sb.type == (int)MilStoryBoardType.Picture) {
-                                foreach (var ext in new string[] { "", ".jpg", ".png", ".jpeg" }) {
-                                    try {
-                                        using (var textureStream = ZipUtils.GetEntry(chartArchive, $"res/{sb.data}{ext}").Open()) {
-                                            sb.sbTextureBytes = ResUtils.ReadAllBytes(textureStream);
-                                        }
-                                        break;
-                                    } catch (Exception e) {
-                                        // Debug.Log($"Loading storyboard texture {sb.data} extname {ext} failed: {e.Message}, trying next");
-                                    }
+            using (ZipArchive chartArchive = ZipFile.OpenRead(selectedPath)) {
+                Debug.Log("Opened chart archive");
+        
+                var metaEntry = ZipUtils.GetEntry(chartArchive, "meta.json");
+                if (metaEntry == null) throw new Exception("meta.json not found in chart archive");
+        
+                using (var metaStream = metaEntry.Open())
+                using (var metaReader = new StreamReader(metaStream)) {
+                    string metaJsonContent = metaReader.ReadToEnd();
+                    meta = JsonUtility.FromJson<ChartMeta>(metaJsonContent);
+                    Debug.Log($"Chart metadata: {metaJsonContent}");
+                }
+        
+                var chartEntry = ZipUtils.GetEntry(chartArchive, meta.chart_file);
+                var audioEntry = ZipUtils.GetEntry(chartArchive, meta.audio_file);
+                var imageEntry = ZipUtils.GetEntry(chartArchive, meta.image_file);
+        
+                if (chartEntry == null) throw new Exception("Chart file not found in chart archive");
+                if (audioEntry == null) throw new Exception("Audio file not found in chart archive");
+                if (imageEntry == null) throw new Exception("Image file not found in chart archive");
+        
+                using (var chartStream = chartEntry.Open())
+                using (var chartReader = new StreamReader(chartStream)) {
+                    string chartJsonContent = chartReader.ReadToEnd();
+                    chart = JsonUtility.FromJson<MilChart>(chartJsonContent);
+                }
+        
+                using (var imageStream = imageEntry.Open()) {
+                    chartImageBytes = ResUtils.ReadAllBytes(imageStream);
+                    Debug.Log($"Loaded image data: {chartImageBytes.Length} bytes");
+                }
+        
+                using (var audioStream = audioEntry.Open()) {
+                    sasaAudioClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(ResUtils.ReadAllBytes(audioStream)));
+                    Debug.Log($"Loaded sasa audio clip: {sasaAudioClip}");
+                }
+        
+                foreach (var sb in chart.storyboards) {
+                    if (sb.type == (int)MilStoryBoardType.Picture) {
+                        foreach (var ext in new string[] { "", ".jpg", ".png", ".jpeg" }) {
+                            try {
+                                using (var textureStream = ZipUtils.GetEntry(chartArchive, $"res/{sb.data}{ext}").Open()) {
+                                    sb.sbTextureBytes = ResUtils.ReadAllBytes(textureStream);
                                 }
+                                break;
+                            } catch (Exception e) {
+                                // Debug.Log($"Loading storyboard texture {sb.data} extname {ext} failed: {e.Message}, trying next");
                             }
                         }
                     }
-                } catch (Exception e) {
-                    Debug.Log($"Error when loading chart (async): {e.Message}");
-                    Debug.LogException(e);
-                    return e;
                 }
+            }
+        } catch (Exception e) {
+            Debug.Log($"Error when loading chart (async): {e.Message}");
+            Debug.LogException(e);
+            err = e;
+        }
 
-                return null;
-            });
-
-            if (err != null) throw err;
-            else {
+        if (err == null) {
+            try {
                 Texture2D tex = new Texture2D(2, 2);
                 tex.LoadImage(chartImageBytes);
                 chartImage.texture = tex;
@@ -214,16 +218,19 @@ public class StartPlay : MonoBehaviour, I18nSupported
                     stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-ChartLoaded");
                 });
                 gameMain.IntoPlay();
+            } catch (Exception e) {
+                setStateSetter(() => {
+                    stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-Error")}: {e.Message}";
+                });
+                Debug.Log($"Error when loading chart: {e.Message}");
+                Debug.LogException(e);
+                err = e;
             }
-        } catch (Exception e) {
-            setStateSetter(() => {
-                stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-Error")}: {e.Message}";
-            });
-            Debug.Log($"Error when loading chart: {e.Message}");
-            Debug.LogException(e);
-        } finally {
-            enableButton();
         }
+
+        enableButton();
+
+        yield break;
     }
 
     public void OnApplicationQuit()
