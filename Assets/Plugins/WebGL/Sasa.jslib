@@ -1,23 +1,24 @@
 mergeInto(LibraryManager.library, (() => {
-    let actx = null;
-    let ptrbase = 0xff;
-    const newPtr = () => ptrbase++;
-
-    const audioManagers = {};
-    const audioClips = {};
-    const audioSfxs = {};
-    const audioMusics = {};
-
     return {
-        initialize: function () {
-            actx = new AudioContext();
+        webgl_sasa_initialize: function () {
+            if (window.sasa_data) return;
+
+            window.sasa_data = {
+                actx: new AudioContext(),
+                audioManagers: {},
+                audioClips: {},
+                audioSfxs: {},
+                audioMusics: {},
+                ptrbase: 0xff,
+                newPtr: function () {
+                    return this.ptrbase++;
+                }
+            };
         },
 
         create_audio_manager: function () {
-            if (!actx) this.initialize();
-            
-            const ptr = newPtr();
-            audioManagers[ptr] = {
+            const ptr = window.sasa_data.newPtr();
+            window.sasa_data.audioManagers[ptr] = {
                 sfxs: [],
                 musics: [],
             };
@@ -25,32 +26,28 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         load_audio_clip_from_memory: function (dataPtr, dataLen) {
-            if (!actx) this.initialize();
-            
             const data = HEAPU8.slice(dataPtr, dataPtr + dataLen);
-            const ptr = newPtr();
+            const ptr = window.sasa_data.newPtr();
             const clip = new Audio();
             clip.src = URL.createObjectURL(new Blob([data]));
-            audioClips[ptr] = clip;
+            window.sasa_data.audioClips[ptr] = clip;
 
             (async () => {
-                const new_clip = await actx.decodeAudioData(data);
-                audioClips[ptr] = new_clip;
+                const new_clip = await window.sasa_data.actx.decodeAudioData(data.buffer);
+                window.sasa_data.audioClips[ptr] = new_clip;
             })();
 
             return ptr;
         },
 
         create_sfx: function (manager_ptr, clip_ptr) {
-            if (!actx) this.initialize();
-            
-            const clip = audioClips[clip_ptr];
-            const manager = audioManagers[manager_ptr];
+            const clip = window.sasa_data.audioClips[clip_ptr];
+            const manager = window.sasa_data.audioManagers[manager_ptr];
 
             if (!clip) return 0;
             if (!manager) return 0;
 
-            const ptr = newPtr();
+            const ptr = window.sasa_data.newPtr();
 
             const sfx = {
                 clip_ptr: clip_ptr,
@@ -58,19 +55,17 @@ mergeInto(LibraryManager.library, (() => {
             };
 
             manager.sfxs.push(sfx);
-            audioSfxs[ptr] = sfx;
+            window.sasa_data.audioSfxs[ptr] = sfx;
         },
 
         create_music: function (manager_ptr, clip_ptr) {
-            if (!actx) this.initialize();
-            
-            const clip = audioClips[clip_ptr];
-            const manager = audioManagers[manager_ptr];
+            const clip = window.sasa_data.audioClips[clip_ptr];
+            const manager = window.sasa_data.audioManagers[manager_ptr];
 
             if (!clip) return 0;
             if (!manager) return 0;
 
-            const ptr = newPtr();
+            const ptr = window.sasa_data.newPtr();
 
             const music = {
                 clip_ptr: clip_ptr,
@@ -80,15 +75,13 @@ mergeInto(LibraryManager.library, (() => {
             };
 
             manager.musics.push(music);
-            audioMusics[ptr] = music;
+            window.sasa_data.audioMusics[ptr] = music;
         },
 
         play_sfx: function (sfx_ptr, volume) {
-            if (!actx) this.initialize();
-            
-            const sfx = audioSfxs[sfx_ptr];
+            const sfx = window.sasa_data.audioSfxs[sfx_ptr];
             if (!sfx) return;
-            const clip = audioClips[sfx.clip_ptr];
+            const clip = window.sasa_data.audioClips[sfx.clip_ptr];
 
             if (clip instanceof Audio) {
                 const temp = clip.cloneNode(true);
@@ -98,22 +91,20 @@ mergeInto(LibraryManager.library, (() => {
                     temp.remove();
                 }
             } else {
-                const source = actx.createBufferSource();
-                const gain_node = actx.createGain();
+                const source = window.sasa_data.actx.createBufferSource();
+                const gain_node = window.sasa_data.actx.createGain();
                 gain_node.gain.value = volume;
                 source.buffer = clip;
                 source.connect(gain_node);
-                gain_node.connect(actx.destination);
+                gain_node.connect(window.sasa_data.actx.destination);
                 source.start();
             }
         },
 
         play_music: function (music_ptr, volume) {
-            if (!actx) this.initialize();
-            
-            const music = audioMusics[music_ptr];
+            const music = window.sasa_data.audioMusics[music_ptr];
             if (!music) return;
-            const clip = audioClips[music.clip_ptr];
+            const clip = window.sasa_data.audioClips[music.clip_ptr];
 
             if (clip instanceof Audio) {
                 const temp = clip.cloneNode(true);
@@ -121,23 +112,21 @@ mergeInto(LibraryManager.library, (() => {
                 temp.play();
                 music.instance = temp;
             } else {
-                const source = actx.createBufferSource();
-                const gain_node = actx.createGain();
+                const source = window.sasa_data.actx.createBufferSource();
+                const gain_node = window.sasa_data.actx.createGain();
                 gain_node.gain.value = volume;
                 source.buffer = clip;
                 source.connect(gain_node);
-                gain_node.connect(actx.destination);
+                gain_node.connect(window.sasa_data.actx.destination);
                 source.start();
                 source.gain_node = gain_node;
-                source.start_time = actx.currentTime;
+                source.start_time = window.sasa_data.actx.currentTime;
                 music.instance = source;
             }
         },
 
         pause_music: function (music_ptr) {
-            if (!actx) this.initialize();
-            
-            const music = audioMusics[music_ptr];
+            const music = window.sasa_data.audioMusics[music_ptr];
             if (!music) return;
             const ins = music.instance;
             
@@ -150,9 +139,7 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         is_music_paused: function (music_ptr) {
-            if (!actx) this.initialize();
-            
-            const music = audioMusics[music_ptr];
+            const music = window.sasa_data.audioMusics[music_ptr];
             if (!music) return false;
             const ins = music.instance;
 
@@ -168,9 +155,7 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         set_music_volume: function (music_ptr, volume) {
-            if (!actx) this.initialize();
-            
-            const music = audioMusics[music_ptr];
+            const music = window.sasa_data.audioMusics[music_ptr];
             if (!music) return;
             const ins = music.instance;
 
@@ -182,9 +167,7 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         get_music_position: function (music_ptr) {
-            if (!actx) this.initialize();
-            
-            const music = audioMusics[music_ptr];
+            const music = window.sasa_data.audioMusics[music_ptr];
             if (!music) return 0;
             const ins = music.instance;
 
@@ -196,28 +179,26 @@ mergeInto(LibraryManager.library, (() => {
         },
 
         get_audio_clip_duration: function (clip_ptr) {
-            if (!actx) this.initialize();
-            
-            const clip = audioClips[clip_ptr];
+            const clip = window.sasa_data.audioClips[clip_ptr];
             if (!clip) return 0;
 
             return clip.duration;
         },
 
         destroy_manager: function (manager_ptr) {
-            
+            delete window.sasa_data.audioManagers[manager_ptr];
         },
 
         destroy_clip: function (clip_ptr) {
-            
+            delete window.sasa_data.audioClips[clip_ptr];
         },
 
         destroy_sfx: function (sfx_ptr) {
-            
+            delete window.sasa_data.audioSfxs[sfx_ptr];
         },
 
         destroy_music: function (music_ptr) {
-            
+            delete window.sasa_data.audioMusics[music_ptr];
         },
 
         recover_if_needed: function () {

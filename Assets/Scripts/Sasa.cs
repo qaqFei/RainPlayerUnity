@@ -32,21 +32,26 @@ namespace Sasa {
         #if !UNITY_WEBGL
             [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
         #else
-            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip_from_memory(byte[] data);
-            [DllImport(DLL_NAME)] public static extern void initialize(); // auto called by javascript
+            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip_from_memory(byte[] data, ulong length);
+            [DllImport(DLL_NAME)] public static extern void webgl_sasa_initialize();
 
             public static IntPtr load_audio_clip(string path) {
                 try {
                     using (var file = System.IO.File.OpenRead(path)) {
                         var buffer = new byte[file.Length];
                         file.Read(buffer, 0, buffer.Length);
-                        return load_audio_clip_from_memory(buffer);
+                        return load_audio_clip_from_memory(buffer, (ulong)buffer.Length);
                     }
                 }
                 catch (Exception e) {
                     Debug.LogException(e);
                     return IntPtr.Zero;
                 }
+            }
+
+            [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+            public static void _webgl_sasa_initialize() {
+                webgl_sasa_initialize();
             }
         #endif
     }

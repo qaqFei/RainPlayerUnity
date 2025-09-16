@@ -105,7 +105,19 @@ public class StartPlay : MonoBehaviour, I18nSupported
         });
         disableButton();
 
-        StartCoroutine(ChartLoader());
+        ChartPreload(() => {
+            StartCoroutine(ChartLoader());
+        });
+    }
+
+    private void ChartPreload(Action callback) {
+        StartCoroutine(ResUtils.ReadStreamingAsset("hit.ogg", (byte[] hit_bytes) => {
+            StartCoroutine(ResUtils.ReadStreamingAsset("drag.ogg", (byte[] drag_bytes) => {
+                gameMain.sasaHitClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(hit_bytes));
+                gameMain.sasaDragClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(drag_bytes));
+                callback.Invoke();
+            }));
+        }));
     }
 
     private System.Collections.IEnumerator ChartLoader() {
@@ -197,8 +209,6 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 gameMain.chart = chart;
                 gameMain.sasaManager = sasaManager;
                 gameMain.sasaAudioClip = sasaAudioClip;
-                gameMain.sasaHitClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(ResUtils.ReadStreamingAsset("hit.ogg")));
-                gameMain.sasaDragClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(ResUtils.ReadStreamingAsset("drag.ogg")));
                 gameMain.FLOW_SPEED = flowSpeedSlider.GetComponent<Slider>().value;
                 MilConst.MilConst.NOTE_SIZE_SCALE = noteSizeSlider.GetComponent<Slider>().value;
                 gameMain.AUTOPLAY = autoplayToggle.GetComponent<Toggle>().isOn;

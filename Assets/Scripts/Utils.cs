@@ -74,25 +74,34 @@ namespace Utils {
             return path;
         }
 
-        public static byte[] ReadStreamingAsset(string name) {
+        public static System.Collections.IEnumerator ReadStreamingAsset(string name, Action<byte[]> callback) {
             string path = Path.Combine(Application.streamingAssetsPath, name);
             #if UNITY_ANDROID && !UNITY_EDITOR
-                return ReadAndroidStreamingAsset(path);
+                return ReadAndroidStreamingAsset(path, callback);
             #else
-                return File.ReadAllBytes(path);
+                return ReadStandaloneStreamingAsset(path, callback);
             #endif
         }
 
-        private static byte[] ReadAndroidStreamingAsset(string path) {
+        private static System.Collections.IEnumerator ReadStandaloneStreamingAsset(string path, Action<byte[]> callback) {
+            yield return null;
+            callback.Invoke(File.ReadAllBytes(path));
+            yield break;
+        }
+
+        private static System.Collections.IEnumerator ReadAndroidStreamingAsset(string path, Action<byte[]> callback) {
             using (UnityWebRequest www = UnityWebRequest.Get(path)) {
-                www.SendWebRequest();
+                yield return www.SendWebRequest();
                 while (!www.isDone) { }
                 if (www.result != UnityWebRequest.Result.Success) {
                     Debug.LogError($"Failed to read streaming asset {path}: {www.error}");
-                    return null;
+                    callback.Invoke(null);
+                    yield break;
                 }
-                return www.downloadHandler.data;
+                callback.Invoke(www.downloadHandler.data);
             }
+
+            yield break;
         }
 
         public static ObjectPool<GameObject> CreateGameObjectPool(GameObject prefab, int defaultCapacity, GameObject parent, int max = 2147483647) {
