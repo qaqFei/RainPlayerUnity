@@ -56,6 +56,8 @@ mergeInto(LibraryManager.library, (() => {
 
             manager.sfxs.push(sfx);
             window.sasa_data.audioSfxs[ptr] = sfx;
+
+            return ptr;
         },
 
         create_music: function (manager_ptr, clip_ptr) {
@@ -76,6 +78,8 @@ mergeInto(LibraryManager.library, (() => {
 
             manager.musics.push(music);
             window.sasa_data.audioMusics[ptr] = music;
+
+            return ptr;
         },
 
         play_sfx: function (sfx_ptr, volume) {
@@ -112,6 +116,10 @@ mergeInto(LibraryManager.library, (() => {
                 temp.play();
                 music.instance = temp;
             } else {
+                if (music.instance) {
+                    return;
+                }
+
                 const source = window.sasa_data.actx.createBufferSource();
                 const gain_node = window.sasa_data.actx.createGain();
                 gain_node.gain.value = volume;
@@ -174,7 +182,7 @@ mergeInto(LibraryManager.library, (() => {
             if (ins instanceof Audio) {
                 return ins.currentTime;
             } else {
-                return actx.currentTime - ins.start_time;
+                return window.sasa_data.actx.currentTime - ins.start_time;
             }
         },
 
