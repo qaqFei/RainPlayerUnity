@@ -6,10 +6,10 @@ using UnityEngine;
 namespace Sasa {
     internal class _libSasa {
         private const string DLL_NAME = 
-        #if !UNITY_WEBGL
-            "sasa";
-        #else
+        #if UNITY_WEBGL && !UNITY_EDITOR
             "__Internal";
+        #else
+            "sasa";
         #endif
 
         [DllImport(DLL_NAME)] public static extern bool play_sfx(IntPtr sfx_ptr, float volume);
@@ -29,9 +29,7 @@ namespace Sasa {
         [DllImport(DLL_NAME)] public static extern IntPtr create_sfx(IntPtr manager_ptr, IntPtr clip_ptr);
         [DllImport(DLL_NAME)] public static extern IntPtr create_music(IntPtr manager_ptr, IntPtr clip_ptr, double playback_rate);
 
-        #if !UNITY_WEBGL
-            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
-        #else
+        #if UNITY_WEBGL && !UNITY_EDITOR
             [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip_from_memory(byte[] data, ulong length);
             [DllImport(DLL_NAME)] public static extern void webgl_sasa_initialize();
 
@@ -53,6 +51,8 @@ namespace Sasa {
             public static void _webgl_sasa_initialize() {
                 webgl_sasa_initialize();
             }
+        #else
+            [DllImport(DLL_NAME)] public static extern IntPtr load_audio_clip(string path);
         #endif
     }
 

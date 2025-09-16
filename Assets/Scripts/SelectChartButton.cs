@@ -5,7 +5,7 @@ using System;
 using MilConst;
 
 #if UNITY_EDITOR || UNITY_STANDALONE_WIN
-    using NativeFileBrowser;
+using NativeFileBrowser;
 #endif
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -116,7 +116,7 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
 
             selectedPath = path[0];
             SelectEnd();
-        #elif UNITY_WEBGL
+        #elif UNITY_WEBGL && !UNITY_EDITOR
             WebGLFilePicker.PickFileAndCache((res) => {
                 selectedPath = res;
                 SelectEnd();
