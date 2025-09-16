@@ -76,7 +76,7 @@ namespace Utils {
 
         public static System.Collections.IEnumerator ReadStreamingAsset(string name, Action<byte[]> callback) {
             string path = Path.Combine(Application.streamingAssetsPath, name);
-            #if UNITY_ANDROID && !UNITY_EDITOR
+            #if (UNITY_ANDROID || UNITY_WEBGL) && !UNITY_EDITOR
                 return ReadAndroidStreamingAsset(path, callback);
             #else
                 return ReadStandaloneStreamingAsset(path, callback);
