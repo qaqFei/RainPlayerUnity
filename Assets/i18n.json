@@ -25,7 +25,9 @@
         "ResetSettings": "Reset Settings",
         "MusicVol": "Music Vol",
         "HitsoundVol": "HitSound Vol",
-        "OklchColorInterplate": "Oklch Color Interplate"
+        "OklchColorInterplate": "Oklch Color Interplate",
+        "Fullscreen": "Full Screen",
+        "ExitFullscreen": "Exit Full Screen"
     },
     "zh": {
         "__LangName": "简体中文",
@@ -53,6 +55,8 @@
         "ResetSettings": "重置设置",
         "MusicVol": "音乐音量",
         "HitsoundVol": "打击音音量",
-        "OklchColorInterplate": "Oklch 颜色插值"
+        "OklchColorInterplate": "Oklch 颜色插值",
+        "Fullscreen": "全屏",
+        "ExitFullscreen": "退出全屏"
     }
 }
