@@ -22,8 +22,4 @@ mergeInto(LibraryManager.library, {
 
         input.click();
     },
-
-    FreeBlobURL: function (url) {
-        // URL.revokeObjectURL(UTF16ToString(url));
-    }
 });

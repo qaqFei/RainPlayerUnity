@@ -17,8 +17,6 @@ using System.Runtime.InteropServices;
 public class WebGLFilePicker : MonoBehaviour
 {
     [DllImport("__Internal")]
-    private static extern void FreeBlobURL(string url);
-    [DllImport("__Internal")]
     private static extern void PickZipFile(string go, string cb);
     private Action<string> onRealPath;
 
@@ -30,25 +28,14 @@ public class WebGLFilePicker : MonoBehaviour
     }
 
     private void OnBlobPicked(string blobUrl) {
-        StartCoroutine(DownloadAndCache(blobUrl));
+        DownloadAndCache(blobUrl);
     }
 
-    private IEnumerator DownloadAndCache(string blobUrl) {
-        using (var uwr = UnityWebRequest.Get(blobUrl)) {
-            yield return uwr.SendWebRequest();
-            if (uwr.result != UnityWebRequest.Result.Success) {
-                Debug.LogError($"WebGL download failed: {uwr.error}");
-                onRealPath?.Invoke(null);
-            }
-            else {
-                byte[] data = uwr.downloadHandler.data;
-                string tmpPath = Path.Combine(Application.temporaryCachePath, $"{Guid.NewGuid().ToString("N")}.zip");
-                File.WriteAllBytes(tmpPath, data);
-                FreeBlobURL(blobUrl);
-                onRealPath?.Invoke(tmpPath);
-            }
-        }
-        Destroy(gameObject);
+    private void DownloadAndCache(string blobUrl) {
+        StartCoroutine(WebGLHelper.DownloadUrlAsTempFile(blobUrl, tmpPath => {
+            onRealPath?.Invoke(tmpPath);
+            Destroy(gameObject);
+        }));
     }
 }
 #endif
@@ -63,6 +50,17 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
 
     void Start() {
         resetedPathText = false;
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        var chartUrl = WebGLHelper.WebGLHelper_GetUrlParamWarpper("chartUrl");
+        if (chartUrl != null) {
+            StartCoroutine(WebGLHelper.DownloadUrlAsTempFile(chartUrl, tmpPath => {
+                resetedPathText = true;
+                selectedPath = tmpPath;
+                SelectEnd();
+            }));
+        }
+        #endif
     }
 
     void Update() {
