@@ -15,6 +15,10 @@ public class WebGLHelper {
     [DllImport(DLL_NAME)] public static extern void WebGLHelper_ReleaseString(int stringId);
     [DllImport(DLL_NAME)] public static extern int WebGLHelper_GetUrlParam(byte[] keyPtr, int keyLen);
     [DllImport(DLL_NAME)] public static extern void WebGLHelper_FreeBlobURL(string url);
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_ChartPlayerLoaded();
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_ChartPlayerLoadFailed();
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_ChartPlayerStartedLoad();
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_BackToHub();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize() {

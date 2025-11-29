@@ -44,6 +44,7 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
 {
     public string selectedPath;
     public Text pathText;
+    public GameObject startPlayButton;
     private bool resetedPathText;
     private string ChartPathI18nKey = "ChartPath";
     private Action pathTextSetter;
@@ -58,6 +59,11 @@ public class SelectChartButton : MonoBehaviour, I18nSupported
                 resetedPathText = true;
                 selectedPath = tmpPath;
                 SelectEnd();
+
+                var p_startImmediately = WebGLHelper.WebGLHelper_GetUrlParamWarpper("startImmediately");
+                if (p_startImmediately != null && bool.Parse(p_startImmediately)) {
+                    StartCoroutine(startPlayButton.GetComponent<StartPlay>().StartPlayNextFrame());
+                }
             }));
         }
         #endif

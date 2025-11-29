@@ -64,5 +64,21 @@ mergeInto(LibraryManager.library, {
 
     WebGLHelper_FreeBlobURL: function (url) {
         // URL.revokeObjectURL(UTF16ToString(url));
+    },
+
+    WebGLHelper_ChartPlayerLoaded: function () {
+        window.dispatchEvent(new Event("rain_player_chart_player_loaded"));
+    },
+
+    WebGLHelper_ChartPlayerLoadFailed: function () {
+        window.dispatchEvent(new Event("rain_player_chart_player_load_failed"));
+    },
+
+    WebGLHelper_ChartPlayerStartedLoad: function () {
+        window.dispatchEvent(new Event("rain_player_chart_player_started_load"));
+    },
+
+    WebGLHelper_BackToHub: function () {
+        window.dispatchEvent(new Event("rain_player_back_to_hub"));
     }
 });

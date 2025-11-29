@@ -755,6 +755,10 @@ public class GameMain : MonoBehaviour
         OnDestroy();
         hub.OnDestroy();
         hub.Start();
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        WebGLHelper.WebGLHelper_BackToHub();
+        #endif
     }
 
     public void Retry() {

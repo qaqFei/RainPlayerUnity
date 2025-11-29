@@ -55,11 +55,58 @@ public class StartPlay : MonoBehaviour, I18nSupported
         gameCanvas.gameObject.SetActive(false);
         sasaManager = libSasa.create_audio_manager();
         Application.targetFrameRate = 1440;
+
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        updateWebGLParams();
+        #endif
     }
 
     void Update() {
         
     }
+
+    #if UNITY_WEBGL && !UNITY_EDITOR
+    void updateWebGLParams() {
+        var p_flowSpeed = WebGLHelper.WebGLHelper_GetUrlParamWarpper("flowSpeed");
+        if (p_flowSpeed != null) flowSpeedSlider.GetComponent<Slider>().value = float.Parse(p_flowSpeed);
+
+        var p_noteSize = WebGLHelper.WebGLHelper_GetUrlParamWarpper("noteSize");
+        if (p_noteSize != null) noteSizeSlider.GetComponent<Slider>().value = float.Parse(p_noteSize);
+
+        var p_offset = WebGLHelper.WebGLHelper_GetUrlParamWarpper("offset");
+        if (p_offset != null) offsetSlider.GetComponent<Slider>().value = float.Parse(p_offset);
+
+        var p_speed = WebGLHelper.WebGLHelper_GetUrlParamWarpper("speed");
+        if (p_speed != null) speedSlider.GetComponent<Slider>().value = float.Parse(p_speed);
+
+        var p_musicVol = WebGLHelper.WebGLHelper_GetUrlParamWarpper("musicVol");
+        if (p_musicVol != null) musicVolSlider.GetComponent<Slider>().value = float.Parse(p_musicVol);
+
+        var p_hitsoundVol = WebGLHelper.WebGLHelper_GetUrlParamWarpper("hitsoundVol");
+        if (p_hitsoundVol != null) hitsoundVolSlider.GetComponent<Slider>().value = float.Parse(p_hitsoundVol);
+
+        var p_autoPlay = WebGLHelper.WebGLHelper_GetUrlParamWarpper("autoPlay");
+        if (p_autoPlay != null) autoplayToggle.isOn = bool.Parse(p_autoPlay);
+
+        var p_debug = WebGLHelper.WebGLHelper_GetUrlParamWarpper("debug");
+        if (p_debug != null) debugToggle.isOn = bool.Parse(p_debug);
+
+        var p_chordHL = WebGLHelper.WebGLHelper_GetUrlParamWarpper("chordHL");
+        if (p_chordHL != null) ChordHLToggle.isOn = bool.Parse(p_chordHL);
+
+        var p_elIndicator = WebGLHelper.WebGLHelper_GetUrlParamWarpper("elIndicator");
+        if (p_elIndicator != null) ELIndicatorToggle.isOn = bool.Parse(p_elIndicator);
+
+        var p_showTouchPoint = WebGLHelper.WebGLHelper_GetUrlParamWarpper("showTouchPoint");
+        if (p_showTouchPoint != null) ShowTouchPointToggle.isOn = bool.Parse(p_showTouchPoint);
+
+        var p_oklchColorInterplate = WebGLHelper.WebGLHelper_GetUrlParamWarpper("oklchColorInterplate");
+        if (p_oklchColorInterplate != null) OklchColorInterplateToggle.isOn = bool.Parse(p_oklchColorInterplate);
+
+        var p_comboText = WebGLHelper.WebGLHelper_GetUrlParamWarpper("comboText");
+        if (p_comboText != null) comboTextInputField.text = p_comboText;
+    }
+    #endif
 
     void setStateSetter(Action setter) {
         stateSetter = setter;
@@ -120,7 +167,16 @@ public class StartPlay : MonoBehaviour, I18nSupported
         }));
     }
 
+    public System.Collections.IEnumerator StartPlayNextFrame() {
+        yield return null;
+        ButtonOnClick();
+    }
+
     private System.Collections.IEnumerator ChartLoader() {
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        WebGLHelper.WebGLHelper_ChartPlayerStartedLoad();
+        #endif
+
         yield return null;
 
         Exception err = null;
@@ -182,6 +238,11 @@ public class StartPlay : MonoBehaviour, I18nSupported
             Debug.Log($"Error when loading chart (async): {e.Message}");
             Debug.LogException(e);
             err = e;
+            yield break;
+
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            WebGLHelper.WebGLHelper_ChartPlayerLoadFailed();
+            #endif
         }
 
         if (err == null) {
@@ -235,10 +296,18 @@ public class StartPlay : MonoBehaviour, I18nSupported
                 Debug.Log($"Error when loading chart: {e.Message}");
                 Debug.LogException(e);
                 err = e;
+                yield break;
+
+                #if UNITY_WEBGL && !UNITY_EDITOR
+                WebGLHelper.WebGLHelper_ChartPlayerLoadFailed();
+                #endif
             }
         }
 
         enableButton();
+        #if UNITY_WEBGL && !UNITY_EDITOR
+        WebGLHelper.WebGLHelper_ChartPlayerLoaded();
+        #endif
 
         yield break;
     }

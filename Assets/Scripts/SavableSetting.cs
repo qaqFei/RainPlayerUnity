@@ -23,8 +23,21 @@ public class SavableSetting : MonoBehaviour
         get { return $"SavableSetting_{key}"; }
     }
 
+    private bool _disabled {
+        get {
+            var res = disabled;
+
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            var p_disabled = WebGLHelper.WebGLHelper_GetUrlParamWarpper("disableSavables");
+            if (p_disabled != null) disabled = disabled || bool.Parse(p_disabled);
+            #endif
+
+            return disabled;
+        }
+    }
+
     public void LoadValue() {
-        if (!HasKey() || disabled) return;
+        if (!HasKey() || _disabled) return;
 
         switch (settingType) {
             case SavableSettingType.Slider:
@@ -60,7 +73,7 @@ public class SavableSetting : MonoBehaviour
             inited = true;
         }
 
-        if (disabled) return;
+        if (_disabled) return;
 
         switch (settingType) {
             case SavableSettingType.Slider:
