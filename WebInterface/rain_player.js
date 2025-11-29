@@ -6,14 +6,23 @@
     class RainPlayerImpl {
         constructor(options) {
             this.iframe = document.createElement('iframe');
+            this.iframe.style.filter = 'opacity(0.001)';
+            this.iframe.style.position = 'absolute';
             this.iframe.src = `${webglBuildDir}/index.html?${this.#makeRainPlyerParams(options)}`;
+            if (!options.container) throw new Error('RainPlayer: container is required');
+            options.container.appendChild(this.iframe);
 
             this._onload_pm = new Promise((res, rej) => {
-                this.iframe.addEventListener('load', () => res(this.iframe.contentDocument || this.iframe.contentWindow.document));
+                this.iframe.addEventListener('load', () => res(this.iframe.contentWindow));
                 this.iframe.addEventListener('error', () => rej(new Error('RainPlayer: iframe load error')));
-            }).then(doc => new Promise((res, rej) => {
-                doc.addEventListener('rain_player_chart_player_loaded', () => res());
-                doc.addEventListener('rain_player_chart_player_load_failed', () => rej(new Error('RainPlayer: chart player load failed')));
+            }).then(wind => new Promise((res, rej) => {
+                wind.addEventListener('rain_player_chart_player_loaded', () => {
+                    this.iframe.style.filter = 'none';
+                    this.iframe.style.position = '';
+                    this.iframe.style.border = 'none';
+                    res();
+                });
+                wind.addEventListener('rain_player_chart_player_load_failed', () => rej(new Error('RainPlayer: chart player load failed')));
             }));
         }
 
