@@ -337,15 +337,11 @@ public class StartPlay : MonoBehaviour, I18nSupported
             var chartJsonId = WebGLHelper.WebGLHelper_GetChartJson();
             if (chartJsonId == 0) throw new Exception("Chart JSON not provided via API");
             
-            var chartJson = WebGLHelper.WebGLHelper_GetUrlParamWarpper("chartJson");
-            if (chartJson == null) {
-                // Fallback: get from string ID
-                var size = WebGLHelper.WebGLHelper_GetStringSize(chartJsonId);
-                var buffer = new byte[size];
-                WebGLHelper.WebGLHelper_WriteStringIntoBuffer(chartJsonId, buffer);
-                WebGLHelper.WebGLHelper_ReleaseString(chartJsonId);
-                chartJson = System.Text.Encoding.UTF8.GetString(buffer);
-            }
+            var size = WebGLHelper.WebGLHelper_GetStringSize(chartJsonId);
+            var buffer = new byte[size];
+            WebGLHelper.WebGLHelper_WriteStringIntoBuffer(chartJsonId, buffer);
+            WebGLHelper.WebGLHelper_ReleaseString(chartJsonId);
+            var chartJson = System.Text.Encoding.UTF8.GetString(buffer);
             
             Debug.Log($"Chart JSON loaded: {chartJson.Length} characters");
             chart = JsonUtility.FromJson<MilChart>(chartJson);
