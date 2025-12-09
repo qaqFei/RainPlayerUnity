@@ -105,6 +105,12 @@ public class StartPlay : MonoBehaviour, I18nSupported
 
         var p_comboText = WebGLHelper.WebGLHelper_GetUrlParamWarpper("comboText");
         if (p_comboText != null) comboTextInputField.text = p_comboText;
+
+        // Check if direct API assets are available
+        if (WebGLHelper.WebGLHelper_HasDirectAssets()) {
+            Debug.Log("Direct API assets detected, starting auto-load");
+            StartCoroutine(StartPlayNextFrame());
+        }
     }
     #endif
 
@@ -175,6 +181,12 @@ public class StartPlay : MonoBehaviour, I18nSupported
     private System.Collections.IEnumerator ChartLoader() {
         #if UNITY_WEBGL && !UNITY_EDITOR
         WebGLHelper.WebGLHelper_ChartPlayerStartedLoad();
+        
+        // Check if we should use direct API assets
+        if (WebGLHelper.WebGLHelper_HasDirectAssets()) {
+            yield return ChartLoaderFromDirectAPI();
+            yield break;
+        }
         #endif
 
         yield return null;
@@ -311,6 +323,117 @@ public class StartPlay : MonoBehaviour, I18nSupported
 
         yield break;
     }
+
+    #if UNITY_WEBGL && !UNITY_EDITOR
+    private System.Collections.IEnumerator ChartLoaderFromDirectAPI() {
+        yield return null;
+
+        Exception err = null;
+
+        try {
+            Debug.Log("Loading chart from direct API assets");
+
+            // Get chart JSON
+            var chartJsonId = WebGLHelper.WebGLHelper_GetChartJson();
+            if (chartJsonId == 0) throw new Exception("Chart JSON not provided via API");
+            
+            var chartJson = WebGLHelper.WebGLHelper_GetUrlParamWarpper("chartJson");
+            if (chartJson == null) {
+                // Fallback: get from string ID
+                var size = WebGLHelper.WebGLHelper_GetStringSize(chartJsonId);
+                var buffer = new byte[size];
+                WebGLHelper.WebGLHelper_WriteStringIntoBuffer(chartJsonId, buffer);
+                WebGLHelper.WebGLHelper_ReleaseString(chartJsonId);
+                chartJson = System.Text.Encoding.UTF8.GetString(buffer);
+            }
+            
+            Debug.Log($"Chart JSON loaded: {chartJson.Length} characters");
+            chart = JsonUtility.FromJson<MilChart>(chartJson);
+
+            // Get audio data
+            var audioDataId = WebGLHelper.WebGLHelper_GetAudioData();
+            if (audioDataId == 0) throw new Exception("Audio data not provided via API");
+            
+            var audioBytes = WebGLHelper.WebGLHelper_GetByteArrayWrapper(audioDataId);
+            Debug.Log($"Audio data loaded: {audioBytes.Length} bytes");
+            sasaAudioClip = libSasa.load_audio_clip(ResUtils.CreateTempFile(audioBytes));
+
+            // Get cover data
+            var coverDataId = WebGLHelper.WebGLHelper_GetCoverData();
+            if (coverDataId == 0) throw new Exception("Cover image not provided via API");
+            
+            chartImageBytes = WebGLHelper.WebGLHelper_GetByteArrayWrapper(coverDataId);
+            Debug.Log($"Cover image loaded: {chartImageBytes.Length} bytes");
+
+            // Load storyboard textures (if any references exist, they won't be loaded in API mode)
+            foreach (var sb in chart.storyboards) {
+                if (sb.type == (int)MilStoryBoardType.Picture) {
+                    Debug.LogWarning($"Storyboard texture '{sb.data}' referenced but not available in API mode");
+                }
+            }
+        } catch (Exception e) {
+            Debug.Log($"Error when loading chart from direct API (async): {e.Message}");
+            Debug.LogException(e);
+            err = e;
+            
+            WebGLHelper.WebGLHelper_ChartPlayerLoadFailed();
+            setStateSetter(() => {
+                stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-Error")}: {e.Message}";
+            });
+            enableButton();
+            yield break;
+        }
+
+        if (err == null) {
+            try {
+                Texture2D tex = new Texture2D(2, 2);
+                tex.LoadImage(chartImageBytes);
+                chartImage.texture = tex;
+
+                AspectRatioFitter fitter = chartImage.GetComponent<AspectRatioFitter>();
+                fitter.aspectRatio = (float)tex.width / tex.height;
+
+                gameMain.chart = chart;
+                gameMain.sasaManager = sasaManager;
+                gameMain.sasaAudioClip = sasaAudioClip;
+                gameMain.FLOW_SPEED = flowSpeedSlider.GetComponent<Slider>().value;
+                MilConst.MilConst.NOTE_SIZE_SCALE = noteSizeSlider.GetComponent<Slider>().value;
+                gameMain.AUTOPLAY = autoplayToggle.GetComponent<Toggle>().isOn;
+                gameMain.OFFSET = offsetSlider.GetComponent<Slider>().value;
+                gameMain.SPEED = speedSlider.GetComponent<Slider>().value;
+                gameMain.ISDEBUG = debugToggle.GetComponent<Toggle>().isOn;
+                gameMain.CHORDHL = ChordHLToggle.GetComponent<Toggle>().isOn;
+                gameMain.ELINDICATOR = ELIndicatorToggle.GetComponent<Toggle>().isOn;
+                gameMain.COMBOTEXT = comboTextInputField.GetComponent<InputField>().text;
+                gameMain.SHOWTOUCHPOINT = ShowTouchPointToggle.GetComponent<Toggle>().isOn;
+                gameMain.MUSICVOL = musicVolSlider.GetComponent<Slider>().value;
+                gameMain.HITSOUNDVOL = hitsoundVolSlider.GetComponent<Slider>().value;
+                MilConst.MilConst.EnableOklchInterplate = OklchColorInterplateToggle.GetComponent<Toggle>().isOn;
+                hubCanvas.gameObject.SetActive(false);
+
+                setStateSetter(() => {
+                    stateText.text = MilConst.MilConst.i18n.GetText("StartPlay-ChartLoaded");
+                });
+                gameMain.IntoPlay();
+            } catch (Exception e) {
+                setStateSetter(() => {
+                    stateText.text = $"{MilConst.MilConst.i18n.GetText("StartPlay-Error")}: {e.Message}";
+                });
+                Debug.Log($"Error when loading chart: {e.Message}");
+                Debug.LogException(e);
+                err = e;
+                
+                WebGLHelper.WebGLHelper_ChartPlayerLoadFailed();
+                enableButton();
+                yield break;
+            }
+        }
+
+        enableButton();
+        WebGLHelper.WebGLHelper_ChartPlayerLoaded();
+        yield break;
+    }
+    #endif
 
     public void OnApplicationQuit()
     {
