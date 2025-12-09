@@ -15,10 +15,10 @@
             this._onload_pm = new Promise((res, rej) => {
                 this.iframe.addEventListener('load', () => res(this.iframe.contentWindow));
                 this.iframe.addEventListener('error', () => rej(new Error('RainPlayer: iframe load error')));
-            }).then(wind => {
+            }).then(async wind => {
                 // If using direct API, set the assets
                 if (options.chartJson || options.chartData) {
-                    this.#setDirectAssets(wind, options);
+                    await this.#setDirectAssets(wind, options);
                 }
                 
                 return new Promise((res, rej) => {

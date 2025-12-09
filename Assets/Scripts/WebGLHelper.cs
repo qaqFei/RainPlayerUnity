@@ -65,6 +65,11 @@ public class WebGLHelper {
         if (arrayId == 0) return null;
         
         var size = WebGLHelper_GetByteArraySize(arrayId);
+        if (size <= 0) {
+            WebGLHelper_ReleaseByteArray(arrayId);
+            return null;
+        }
+        
         var buffer = new byte[size];
         WebGLHelper_WriteByteArrayIntoBuffer(arrayId, buffer);
         WebGLHelper_ReleaseByteArray(arrayId);
