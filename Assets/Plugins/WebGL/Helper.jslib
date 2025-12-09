@@ -5,6 +5,13 @@ mergeInto(LibraryManager.library, {
         window.WebGLHelper_Data = {
             _strings_ptr: 0xff,
             _strings: new Map(),
+            _bytearrays_ptr: 0xff,
+            _bytearrays: new Map(),
+
+            // Direct asset storage for API mode
+            chartJson: null,
+            audioData: null,
+            coverData: null,
 
             getString: (ptr, len) => {
                 const uint8Arr = HEAPU8.slice(ptr, ptr + len);
@@ -16,6 +23,11 @@ mergeInto(LibraryManager.library, {
                 const uint8Arr = encoder.encode(str);
                 const id = this._strings_ptr++;
                 this._strings.set(id, uint8Arr);
+                return id;
+            },
+            makeByteArray: function (uint8Arr) {
+                const id = this._bytearrays_ptr++;
+                this._bytearrays.set(id, uint8Arr);
                 return id;
             },
         }
@@ -80,5 +92,42 @@ mergeInto(LibraryManager.library, {
 
     WebGLHelper_BackToHub: function () {
         window.dispatchEvent(new Event("rain_player_back_to_hub"));
+    },
+
+    // New API methods for direct asset loading
+    WebGLHelper_HasDirectAssets: function () {
+        return window.WebGLHelper_Data.chartJson !== null;
+    },
+
+    WebGLHelper_GetChartJson: function () {
+        if (!window.WebGLHelper_Data.chartJson) return 0;
+        return window.WebGLHelper_Data.makeString(window.WebGLHelper_Data.chartJson);
+    },
+
+    WebGLHelper_GetByteArraySize: function (arrayId) {
+        if (!window.WebGLHelper_Data._bytearrays.has(arrayId)) return 0;
+        const uint8Arr = window.WebGLHelper_Data._bytearrays.get(arrayId);
+        return uint8Arr.length;
+    },
+
+    WebGLHelper_WriteByteArrayIntoBuffer: function (arrayId, bufferPtr) {
+        if (!window.WebGLHelper_Data._bytearrays.has(arrayId)) return;
+        const uint8Arr = window.WebGLHelper_Data._bytearrays.get(arrayId);
+        HEAPU8.set(uint8Arr, bufferPtr);
+    },
+
+    WebGLHelper_ReleaseByteArray: function (arrayId) {
+        if (!window.WebGLHelper_Data._bytearrays.has(arrayId)) return;
+        window.WebGLHelper_Data._bytearrays.delete(arrayId);
+    },
+
+    WebGLHelper_GetAudioData: function () {
+        if (!window.WebGLHelper_Data.audioData) return 0;
+        return window.WebGLHelper_Data.makeByteArray(window.WebGLHelper_Data.audioData);
+    },
+
+    WebGLHelper_GetCoverData: function () {
+        if (!window.WebGLHelper_Data.coverData) return 0;
+        return window.WebGLHelper_Data.makeByteArray(window.WebGLHelper_Data.coverData);
     }
 });
