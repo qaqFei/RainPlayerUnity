@@ -545,7 +545,7 @@ namespace MilDataStructs {
         }
 
         public void Update(double t, int only = -1) {
-            if (t < last_time || true) {
+            if (t < last_time) {
                 for (int type = 0; type < animations.Length; type++) {
                     indexs[type] = 0;
                 }

@@ -225,7 +225,7 @@ namespace MilPlayment {
                     }
                 }
             }
-            res.Sort((a, b) => Math.Abs(a.timeSec - t).CompareTo(Math.Abs(b.timeSec - t)));
+            res.Sort((a, b) => (a.timeSec - t).CompareTo(b.timeSec - t));
             return res;
         }
 
