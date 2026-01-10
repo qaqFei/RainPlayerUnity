@@ -150,8 +150,8 @@ namespace MilPlayment {
             return y / 1080 * h;
         }
 
-        private bool _ishit(double t, MilNote note, Touch touch) {
-            if (touch.is_key) return true;
+        private Vector2 getRelTouchPoint(double t, MilNote note, Touch touch) {
+            if (touch.is_key) return Vector2.zero;
 
             var line = note.master;
             note.animationCollection.Update(t);
@@ -177,6 +177,12 @@ namespace MilPlayment {
             var notePos = note.GetPosition(t, 0.0, ToScreenX, ToScreenY);
             var transform = note.GetCanvasTransform(lineCenter, lineRotation, lineSize, noteScale, noteRotation);
             var touchPoint = transform.getInverse().getPoint((double)touch.x, (double)touch.y);
+
+            return touchPoint;
+        }
+
+        private bool _ishit(double t, MilNote note, Touch touch) {
+            var touchPoint = getRelTouchPoint(t, note, touch);
 
             return (
                 -judge_size[0] / 2 <= touchPoint.x &&
@@ -206,7 +212,7 @@ namespace MilPlayment {
             return (int)EnumJudgeState.Exact <= state && state <= (int)EnumJudgeState.Good;
         }
 
-        private List<MilNote> _get_notes(double t) {
+        private List<MilNote> _get_notes(double t, Touch touch = null) {
             var res = new List<MilNote>();
             foreach (var line in chart.lines) {
                 foreach (var note in line.notes) {
@@ -225,7 +231,17 @@ namespace MilPlayment {
                     }
                 }
             }
-            res.Sort((a, b) => (a.timeSec - t).CompareTo(b.timeSec - t));
+
+            res.Sort((a, b) => {
+                if (Math.Abs(a.timeSec - b.timeSec) > 20 / 1000 || touch == null) {
+                    return a.timeSec.CompareTo(b.timeSec);
+                }
+
+                var rela = getRelTouchPoint(t, a, touch);
+                var relb = getRelTouchPoint(t, b, touch);
+                return rela.magnitude.CompareTo(relb.magnitude);
+            });
+
             return res;
         }
 
@@ -247,7 +263,7 @@ namespace MilPlayment {
                 log($"touch start: {touch.sig}, time: {t}, ({x}, {y}) (was active)");
             }
 
-            foreach (var note in _get_notes(t)) {
+            foreach (var note in _get_notes(t, touch)) {
                 var line = note.master;
 
                 if (_ishit(t, note, touch) && !note.head_judged && note.timeSec - JudgeRange.Bad < t) {
@@ -283,7 +299,7 @@ namespace MilPlayment {
                                 _submit_accitem(1.0);
                                 exact_cut++;
                             } else if (note.judge_state == (int)EnumJudgeState.Perfect) {
-                                _submit_accitem(0.9);
+                                _submit_accitem(1.0);
                                 perfect_cut++;
                             } else if (note.judge_state == (int)EnumJudgeState.Great) {
                                 _submit_accitem(0.6);
