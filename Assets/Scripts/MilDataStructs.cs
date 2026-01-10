@@ -26,7 +26,9 @@ namespace MilDataStructs {
         public List<double> comboTimes;
         public MilPlayment.MilPlayment playment;
         public AnimUtils.ValueTransformer comboScaleValueTrans;
+        public AnimUtils.ValueTransformer scoreValueTrans;
         private int last_combo;
+        private double last_score;
         private double comboScaleLastChange;
 
         void InitAnimations(List<MilAnimation> es) {
@@ -44,7 +46,9 @@ namespace MilDataStructs {
         public void Init() {
             comboTimes = new List<double>();
             comboScaleValueTrans = new AnimUtils.ValueTransformer(x => (1.0 - Math.Pow(1.0 - x, 3)), 0.08);
+            scoreValueTrans = new AnimUtils.ValueTransformer(x => x, 0.2);
             last_combo = -1;
+            last_score = -1;
             
             foreach (var bpm in bpms) {
                 bpm.timeSec = Beat2Sec(MilChartUtils.BeatToNumber(bpm.time));
@@ -134,6 +138,13 @@ namespace MilDataStructs {
             if (comboScaleValueTrans.target != 1.0 && comboScaleValueTrans.time_getter() - comboScaleLastChange > comboScaleValueTrans.animation_time) {
                 comboScaleValueTrans.target = 1.0;
             }
+        }
+
+        public void OnScoreUpdated(double score) {
+            if (score == last_score) return;
+            last_score = score;
+
+            scoreValueTrans.target = score;
         }
 
         public double Beat2Sec(double t) {

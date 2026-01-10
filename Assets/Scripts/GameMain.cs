@@ -561,12 +561,13 @@ public class GameMain : MonoBehaviour
 
         chart.OnComboUpdated(combo);
         chart.TryresetComboScale();
+        chart.OnScoreUpdated(score);
 
         var combo_scale = ComboRawScale * (float)chart.comboScaleValueTrans.value;
         GameUI.transform.Find("Combo").gameObject.GetComponent<RectTransform>().localScale = new Vector3(combo_scale, combo_scale, 1);
 
         GameUI.transform.Find("Combo").gameObject.GetComponent<Text>().text = combo.ToString();
-        GameUI.transform.Find("Score").gameObject.GetComponent<Text>().text = ((int)score).ToString("D7");
+        GameUI.transform.Find("Score").gameObject.GetComponent<Text>().text = ((int)chart.scoreValueTrans.value).ToString("D7");
         GameUI.transform.Find("Acc").gameObject.GetComponent<Text>().text = $"{(acc * 100).ToString("F2")}%";
         GameUI.transform.Find("ComboText").gameObject.GetComponent<Text>().text = COMBOTEXT == "" ? (AUTOPLAY ? "AUTOPLAY" : "COMBO") : ((AUTOPLAY && COMBOTEXT != "AUTOPLAY") ? "  ヽ(*。>Д<)o゜" : COMBOTEXT);
 
