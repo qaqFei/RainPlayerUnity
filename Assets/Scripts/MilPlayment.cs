@@ -203,7 +203,10 @@ namespace MilPlayment {
             else if (offset <= JudgeRange.Bad) res = (int)EnumJudgeState.Bad;
             else res = (int)EnumJudgeState.Miss;
 
-            if (note.isAlwaysPerfect && _judge_state_ishit(res)) res = (int)EnumJudgeState.Exact;
+            if (note.isAlwaysPerfect) {
+                if (_judge_state_ishit(res)) res = (int)EnumJudgeState.Exact;
+                else res = (int)EnumJudgeState.Miss;
+            } 
 
             return res;
         }
@@ -299,7 +302,7 @@ namespace MilPlayment {
                                 _submit_accitem(1.0);
                                 exact_cut++;
                             } else if (note.judge_state == (int)EnumJudgeState.Perfect) {
-                                _submit_accitem(1.0);
+                                _submit_accitem(0.9);
                                 perfect_cut++;
                             } else if (note.judge_state == (int)EnumJudgeState.Great) {
                                 _submit_accitem(0.6);
