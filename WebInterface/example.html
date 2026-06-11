@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rain Player API 示例</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .file-input-group {
+            margin-bottom: 15px;
+        }
+
+        .file-input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .file-status {
+            margin-top: 5px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .file-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .file-status.empty {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option-group label {
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        input[type="number"], input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .player-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: black;
+            z-index: 1000;
+            display: none;
+        }
+
+        .player-container.active {
+            display: block;
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1001;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .example-section {
+            background: #f8f9ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .example-section h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .example-section pre {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box strong {
+            color: #1976D2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Rain Player API 示例</h1>
+        <p class="subtitle">通过 API 直接加载谱面，无需 ZIP 文件</p>
+
+        <div class="info-box">
+            <strong>📖 使用说明：</strong>
+            <ul style="margin-left: 20px; margin-top: 10px;">
+                <li>选择 JSON 格式的谱面文件（必需）</li>
+                <li>选择音频文件（支持 MP3、OGG、WAV 等）</li>
+                <li>选择封面图片（支持 JPG、PNG）</li>
+                <li>调整游戏选项，然后点击"开始游戏"</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>📁 选择文件</h2>
+            
+            <div class="file-input-group">
+                <label>谱面 JSON 文件 *</label>
+                <input type="file" id="chartFile" accept=".json" />
+                <div class="file-status empty" id="chartStatus">未选择文件</div>
+            </div>
+
+            <div class="file-input-group">
+                <label>音频文件 *</label>
+                <input type="file" id="audioFile" accept="audio/*" />
+                <div class="file-status empty" id="audioStatus">未选择文件</div>
+            </div>
+
+            <div class="file-input-group">
+                <label>封面图片 *</label>
+                <input type="file" id="coverFile" accept="image/*" />
+                <div class="file-status empty" id="coverStatus">未选择文件</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>⚙️ 游戏选项</h2>
+            
+            <div class="options">
+                <div class="option-group">
+                    <label>音符大小 (Note Size)</label>
+                    <input type="number" id="noteSize" value="1.15" step="0.05" min="0.5" max="2">
+                </div>
+
+                <div class="option-group">
+                    <label>下落速度 (Flow Speed)</label>
+                    <input type="number" id="flowSpeed" value="1.66" step="0.1" min="0.5" max="3">
+                </div>
+
+                <div class="option-group">
+                    <label>音频偏移 (Offset ms)</label>
+                    <input type="number" id="offset" value="0" step="10" min="-1000" max="1000">
+                </div>
+
+                <div class="option-group">
+                    <label>播放速度 (Speed)</label>
+                    <input type="number" id="speed" value="1.0" step="0.1" min="0.5" max="2">
+                </div>
+
+                <div class="option-group">
+                    <label>音乐音量 (Music Vol)</label>
+                    <input type="number" id="musicVol" value="1.0" step="0.1" min="0" max="1">
+                </div>
+
+                <div class="option-group">
+                    <label>打击音量 (Hitsound Vol)</label>
+                    <input type="number" id="hitsoundVol" value="1.0" step="0.1" min="0" max="1">
+                </div>
+            </div>
+
+            <div class="options">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="autoPlay">
+                    <label for="autoPlay">自动游玩 (Auto Play)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="chordHL" checked>
+                    <label for="chordHL">和弦高亮 (Chord HL)</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="elIndicator">
+                    <label for="elIndicator">Early/Late 指示器</label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="debug">
+                    <label for="debug">调试模式 (Debug)</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn" id="startBtn" disabled>开始游戏</button>
+
+        <div class="section" style="margin-top: 40px;">
+            <div class="example-section">
+                <h3>💡 代码示例</h3>
+                <p style="margin-bottom: 10px;">使用 JavaScript 直接加载谱面：</p>
+                <pre><code>const ins = RainPlayer.instantiate({
+    chartData: chartDataObject,  // JS 对象
+    audioBlob: audioFileBlob,    // Blob 对象
+    coverBlob: coverFileBlob,    // Blob 对象
+    container: document.body,
+    noteSize: 1.15,
+    autoPlay: false
+});
+
+await ins.waitLoaded();</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="player-container" id="playerContainer"></div>
+    
+    <div class="loading" id="loading" style="display: none;">
+        <div class="loading-spinner"></div>
+        <div>正在加载游戏...</div>
+    </div>
+
+    <script src="/rain_player.js"></script>
+    <script>
+        let chartData = null;
+        let audioBlob = null;
+        let coverBlob = null;
+
+        // File input handlers
+        document.getElementById('chartFile').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    const text = await file.text();
+                    chartData = JSON.parse(text);
+                    updateStatus('chartStatus', `✓ ${file.name}`, 'success');
+                } catch (error) {
+                    updateStatus('chartStatus', `✗ 解析失败: ${error.message}`, 'empty');
+                    chartData = null;
+                }
+            } else {
+                chartData = null;
+                updateStatus('chartStatus', '未选择文件', 'empty');
+            }
+            checkCanStart();
+        });
+
+        document.getElementById('audioFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                audioBlob = file;
+                updateStatus('audioStatus', `✓ ${file.name}`, 'success');
+            } else {
+                audioBlob = null;
+                updateStatus('audioStatus', '未选择文件', 'empty');
+            }
+            checkCanStart();
+        });
+
+        document.getElementById('coverFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                coverBlob = file;
+                updateStatus('coverStatus', `✓ ${file.name}`, 'success');
+            } else {
+                coverBlob = null;
+                updateStatus('coverStatus', '未选择文件', 'empty');
+            }
+            checkCanStart();
+        });
+
+        function updateStatus(elementId, text, className) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            element.className = `file-status ${className}`;
+        }
+
+        function checkCanStart() {
+            const canStart = chartData && audioBlob && coverBlob;
+            document.getElementById('startBtn').disabled = !canStart;
+        }
+
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            try {
+                // Show loading
+                document.getElementById('loading').style.display = 'block';
+
+                // Configure RainPlayer
+                if (!window.RainPlayer) {
+                    throw new Error('RainPlayer 未加载，请确保 rain_player.js 已正确引入');
+                }
+
+                RainPlayer.configure({
+                    webglBuildDir: '/webgl_build_dir'  // 根据实际路径调整
+                });
+
+                // Get options
+                const options = {
+                    chartData: chartData,
+                    audioBlob: audioBlob,
+                    coverBlob: coverBlob,
+                    container: document.getElementById('playerContainer'),
+                    noteSize: parseFloat(document.getElementById('noteSize').value),
+                    flowSpeed: parseFloat(document.getElementById('flowSpeed').value),
+                    offset: parseFloat(document.getElementById('offset').value),
+                    speed: parseFloat(document.getElementById('speed').value),
+                    musicVol: parseFloat(document.getElementById('musicVol').value),
+                    hitsoundVol: parseFloat(document.getElementById('hitsoundVol').value),
+                    autoPlay: document.getElementById('autoPlay').checked,
+                    chordHL: document.getElementById('chordHL').checked,
+                    elIndicator: document.getElementById('elIndicator').checked,
+                    debug: document.getElementById('debug').checked
+                };
+
+                // Create player instance
+                const player = RainPlayer.instantiate(options);
+
+                // Show player container
+                document.getElementById('playerContainer').classList.add('active');
+
+                // Wait for load
+                await player.waitLoaded();
+
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+
+                // Set iframe style
+                player.iframe.style.width = '100%';
+                player.iframe.style.height = '100%';
+
+                // Listen for back to hub event
+                player.iframe.contentWindow.addEventListener('rain_player_back_to_hub', () => {
+                    document.getElementById('playerContainer').classList.remove('active');
+                    player.iframe.remove();
+                });
+
+            } catch (error) {
+                alert('启动失败: ' + error.message);
+                console.error(error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('playerContainer').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

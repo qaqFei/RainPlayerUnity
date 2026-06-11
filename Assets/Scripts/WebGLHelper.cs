@@ -19,6 +19,13 @@ public class WebGLHelper {
     [DllImport(DLL_NAME)] public static extern void WebGLHelper_ChartPlayerLoadFailed();
     [DllImport(DLL_NAME)] public static extern void WebGLHelper_ChartPlayerStartedLoad();
     [DllImport(DLL_NAME)] public static extern void WebGLHelper_BackToHub();
+    [DllImport(DLL_NAME)] public static extern bool WebGLHelper_HasDirectAssets();
+    [DllImport(DLL_NAME)] public static extern int WebGLHelper_GetChartJson();
+    [DllImport(DLL_NAME)] public static extern int WebGLHelper_GetByteArraySize(int arrayId);
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_WriteByteArrayIntoBuffer(int arrayId, byte[] bufferPtr);
+    [DllImport(DLL_NAME)] public static extern void WebGLHelper_ReleaseByteArray(int arrayId);
+    [DllImport(DLL_NAME)] public static extern int WebGLHelper_GetAudioData();
+    [DllImport(DLL_NAME)] public static extern int WebGLHelper_GetCoverData();
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void Initialize() {
@@ -52,6 +59,21 @@ public class WebGLHelper {
                 callback?.Invoke(tmpPath);
             }
         }
+    }
+
+    public static byte[] WebGLHelper_GetByteArrayWrapper(int arrayId) {
+        if (arrayId == 0) return null;
+        
+        var size = WebGLHelper_GetByteArraySize(arrayId);
+        if (size <= 0) {
+            WebGLHelper_ReleaseByteArray(arrayId);
+            return null;
+        }
+        
+        var buffer = new byte[size];
+        WebGLHelper_WriteByteArrayIntoBuffer(arrayId, buffer);
+        WebGLHelper_ReleaseByteArray(arrayId);
+        return buffer;
     }
 }
 #endif
